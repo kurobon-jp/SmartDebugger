@@ -33,11 +33,14 @@ namespace SmartDebugger
                 }
             }
 
-            _current ??= fieldLayouts[0];
-            for (var i = 0; i < fieldLayouts.Count; i++)
+            if (fieldLayouts.Count > 0)
             {
-                var fieldLayout = fieldLayouts[i];
-                CreateTab(fieldLayout);
+                _current ??= fieldLayouts[0];
+                for (var i = 0; i < fieldLayouts.Count; i++)
+                {
+                    var fieldLayout = fieldLayouts[i];
+                    CreateTab(fieldLayout);
+                }
             }
 
             _tab.gameObject.SetActive(false);
