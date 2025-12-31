@@ -18,9 +18,6 @@
     "logviewer",
     "bugreport"
   ],
-  "dependencies": {
-    "com.github.kurobon.simple_scroll": "https://github.com/kurobon-jp/SimpleScroll.git?path=Assets/"
-  },
   "samples": [
     {
       "displayName": "SmartDebugger Sample",
