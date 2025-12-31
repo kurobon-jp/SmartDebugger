@@ -1,0 +1,19 @@
+{
+    "name": "Unity.SmartDebuge",
+    "rootNamespace": "SmartDebuger",
+    "references": [
+        "Unity.InputSystem",
+        "Unity.SimpleScroll"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "!DISABLE_SMART_DEBUG"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
