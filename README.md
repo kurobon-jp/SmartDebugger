@@ -75,7 +75,7 @@ using UnityEngine;
 /// <summary>
 /// Sample component that registers a custom field layout to SmartDebug.
 /// </summary>
-public sealed class Example : MonoBehaviour, IFieldLayout
+public class Example : MonoBehaviour, IFieldLayout
 {
     /// <summary>
     /// Title displayed in the Variable Tab.
@@ -85,8 +85,7 @@ public sealed class Example : MonoBehaviour, IFieldLayout
     /// <summary>
     /// Integer variable exposed to the debug UI.
     /// </summary>
-    public readonly IntVariable Int =
-        new("Int", defaultValue: 50, maxValue: 100, erializeKey: "sd.int");
+    public readonly IntVariable Int = new("Int", defaultValue: 50, maxValue: 100, serializeKey: "sd.int");
 
     private void Start()
     {
@@ -123,6 +122,7 @@ Displays Unity logs (`Debug.Log`, `Debug.LogWarning`, `Debug.LogError`) **in rea
 Features:
 
 - Log level filtering (Log / Warning / Error)
+- Text filtering
 - Auto-scroll
 - Available in build (no Editor connection required)
 
@@ -219,7 +219,7 @@ This allows opening the debug menu on devices without hardware keyboards.
 
 > ⚠️ **URP / HDRP Runtime Debug UI Conflict**
 >
-> In URP / HDRP, the default **3-finger triple tap** gesture may conflict with the built-in SRP Runtime Debug UI.
+> In URP / HDRP, the default **3-finger double tap** gesture may conflict with the built-in SRP Runtime Debug UI.
 >
 > If SmartDebugger does not open as expected, disable the SRP runtime UI by setting:
 >
@@ -235,21 +235,6 @@ This allows opening the debug menu on devices without hardware keyboards.
 |------|-------------|
 | **Main Tab Contents** | List of tabs shown in the debug menu |
 | **Canvas Sorting Order** | Sorting order of the SmartDebugger UI canvas |
-
-### Bug Reporter
-
-Assign a `BugReporter` implementation to enable bug reporting features.
-
-The reporter can collect:
-- User comments
-- SystemInfo
-- Logs
-- Profiler data (FPS / memory)
-
-And forward them to:
-- Slack
-- HTTP endpoints
-- Custom backends
 
 ---
 
