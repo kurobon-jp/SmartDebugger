@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.github.kurobon.simple_scroll": "https://github.com/kurobon-jp/SimpleScroll.git?path=Assets/",
+    "com.github.kurobon.simple_scroll": "1.0.1",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.collab-proxy": "2.10.2",
     "com.unity.device-simulator.devices": "1.0.1",
@@ -40,5 +40,15 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.github.kurobon.simple_scroll"
+      ],
+      "overrideBuiltIns": false
+    }
+  ]
 }

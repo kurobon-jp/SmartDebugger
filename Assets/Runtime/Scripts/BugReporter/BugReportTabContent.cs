@@ -48,10 +48,10 @@ namespace SmartDebugger
             var report = "";
             if (_includeScreenshot.isOn)
             {
-                SmartDebug.Instance.HideCanvas();
+                SmartDebug.Instance.CloseMenu();
                 yield return new WaitForEndOfFrame();
                 var tex = ScreenCapture.CaptureScreenshotAsTexture();
-                SmartDebug.Instance.ShowCanvas();
+                SmartDebug.Instance.OpenMenu();
                 screenShot = tex.EncodeToPNG();
                 Destroy(tex);
             }

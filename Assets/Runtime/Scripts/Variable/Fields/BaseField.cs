@@ -6,7 +6,7 @@ namespace SmartDebugger
     {
         public void SetWidth(float width)
         {
-            var rectTransform = (RectTransform) transform;
+            var rectTransform = (RectTransform)transform;
             rectTransform.sizeDelta = new Vector2(width, rectTransform.sizeDelta.y);
         }
     }

@@ -8,7 +8,7 @@ namespace SmartDebugger
         [SerializeField] private Text _title;
         [SerializeField] private Text _value;
 
-        public void SetText(string title, string value)
+        public void Bind(string title, string value)
         {
             _title.text = title;
             _value.text = value;

@@ -6,10 +6,10 @@ namespace SmartDebugger
     [Serializable]
     public struct KeyShortcut
     {
-        public KeyCode Key;
+        public KeyCode KeyCode;
         public ModifierKeys Modifiers;
 
-        public bool IsEnable => Key != KeyCode.None;
+        public bool IsEnable => KeyCode != KeyCode.None;
     }
 
     [Flags]

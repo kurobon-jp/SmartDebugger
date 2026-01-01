@@ -78,7 +78,7 @@ namespace SmartDebugger
 
         public InputSystemKeyEventDetector(KeyShortcut shortcut)
         {
-            _key = Keymap[shortcut.Key];
+            _key = Keymap[shortcut.KeyCode];
             _modifiers = shortcut.Modifiers;
         }
 

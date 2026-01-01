@@ -5,27 +5,16 @@ namespace SmartDebugger
 {
     public class FieldLayoutTab : BaseView
     {
-        [SerializeField] private Text _text;
+        [SerializeField] private Text _title;
         [SerializeField] private FieldLayoutTabContent _contentPrefab;
 
-        private string _title;
         private Transform _contentParent;
         private IFieldLayout _fieldLayout;
         private FieldLayoutTabContent _content;
 
-        public string Title
-        {
-            get => _title;
-            set
-            {
-                _title = value;
-                _text.text = _title;
-            }
-        }
-
         public void Bind(IFieldLayout fieldLayout, Transform contentParent)
         {
-            Title = fieldLayout.Title;
+            _title.text = fieldLayout.Title;
             _fieldLayout = fieldLayout;
             _contentParent = contentParent;
             gameObject.SetActive(true);

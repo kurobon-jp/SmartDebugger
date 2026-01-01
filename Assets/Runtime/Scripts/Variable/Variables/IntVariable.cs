@@ -46,10 +46,10 @@ namespace SmartDebugger
             public GameObject Build(IVariable variable, Transform parent)
             {
                 var prefab = Resources.Load<IntField>("Prefabs/Fields/IntField");
-                var view = Object.Instantiate(prefab, parent);
-                view.SetWidth(_width);
-                view.Bind((IntVariable)variable);
-                return view.gameObject;
+                var field = Object.Instantiate(prefab, parent);
+                field.SetWidth(_width);
+                field.Bind((IntVariable)variable);
+                return field.gameObject;
             }
         }
 
@@ -65,10 +65,10 @@ namespace SmartDebugger
             public GameObject Build(IVariable variable, Transform parent)
             {
                 var prefab = Resources.Load<IntSlider>("Prefabs/Fields/IntSlider");
-                var view = Object.Instantiate(prefab, parent);
-                view.SetWidth(_width);
-                view.Bind((IntVariable)variable);
-                return view.gameObject;
+                var field = Object.Instantiate(prefab, parent);
+                field.SetWidth(_width);
+                field.Bind((IntVariable)variable);
+                return field.gameObject;
             }
         }
     }

@@ -102,17 +102,17 @@ namespace SmartDebugger
             _instance = null;
         }
 
-        public void ShowCanvas()
+        public void OpenMenu()
         {
             _canvas.gameObject.SetActive(true);
         }
 
-        public void HideCanvas()
+        public void CloseMenu()
         {
             _canvas.gameObject.SetActive(false);
         }
 
-        public void ToggleCanvas()
+        public void ToggleMenu()
         {
             _canvas.gameObject.SetActive(!IsShownCanvas);
         }
@@ -123,7 +123,7 @@ namespace SmartDebugger
             {
                 if (detector.IsTriggered())
                 {
-                    ToggleCanvas();
+                    ToggleMenu();
                     break;
                 }
             }
@@ -132,7 +132,7 @@ namespace SmartDebugger
             {
                 if (detector.IsTriggered())
                 {
-                    HideCanvas();
+                    CloseMenu();
                     break;
                 }
             }

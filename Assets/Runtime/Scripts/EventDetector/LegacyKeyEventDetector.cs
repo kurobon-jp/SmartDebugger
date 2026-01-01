@@ -13,7 +13,7 @@ namespace SmartDebugger
 
         public bool IsTriggered()
         {
-            if (!Input.GetKeyDown(_shortcut.Key))
+            if (!Input.GetKeyDown(_shortcut.KeyCode))
                 return false;
 
             if ((_shortcut.Modifiers & ModifierKeys.Shift) != 0 &&

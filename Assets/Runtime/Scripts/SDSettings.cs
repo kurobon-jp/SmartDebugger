@@ -27,13 +27,13 @@ namespace SmartDebugger
 
         [SerializeField] private KeyShortcut _openShortcut = new()
         {
-            Key = KeyCode.F1,
+            KeyCode = KeyCode.F1,
             Modifiers = ModifierKeys.Ctrl | ModifierKeys.Shift
         };
 
         [SerializeField] private KeyShortcut _closeShortcut = new()
         {
-            Key = KeyCode.Escape
+            KeyCode = KeyCode.Escape
         };
 
         [SerializeField] private TapEvent _openTapEvent = new()

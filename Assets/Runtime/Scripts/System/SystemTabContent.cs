@@ -32,7 +32,7 @@ namespace SmartDebugger
                     _groups.Add(value.Key, group);
                 }
 
-                group.SetText(value.Key, value.Value);
+                group.Bind(value.Key, value.Value);
             }
 
             _group.gameObject.SetActive(false);

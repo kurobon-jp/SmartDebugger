@@ -24,10 +24,10 @@ namespace SmartDebugger
             public GameObject Build(IVariable variable, Transform parent)
             {
                 var prefab = Resources.Load<Label>("Prefabs/Fields/Label");
-                var view = Object.Instantiate(prefab, parent);
-                view.SetWidth(_width);
-                view.Bind((LabelVariable)variable);
-                return view.gameObject;
+                var field = Object.Instantiate(prefab, parent);
+                field.SetWidth(_width);
+                field.Bind((LabelVariable)variable);
+                return field.gameObject;
             }
         }
     }

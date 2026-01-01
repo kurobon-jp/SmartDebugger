@@ -30,10 +30,10 @@ namespace SmartDebugger
             public GameObject Build(IVariable variable, Transform parent)
             {
                 var prefab = Resources.Load<ActionButton>("Prefabs/Fields/ActionButton");
-                var view = Object.Instantiate(prefab, parent);
-                view.Bind((ActionVariable)variable);
-                view.SetWidth(_width);
-                return view.gameObject;
+                var field = Object.Instantiate(prefab, parent);
+                field.Bind((ActionVariable)variable);
+                field.SetWidth(_width);
+                return field.gameObject;
             }
         }
     }

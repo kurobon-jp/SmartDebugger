@@ -1,11 +1,11 @@
 {
   "dependencies": {
     "com.github.kurobon.simple_scroll": {
-      "version": "https://github.com/kurobon-jp/SimpleScroll.git?path=Assets/",
+      "version": "1.0.1",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {},
-      "hash": "79ad437bd033d107bc72deca1b69fa7e37235421"
+      "url": "https://package.openupm.com"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",

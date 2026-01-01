@@ -420,7 +420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67a13708b12647548dd5f35c15a8fc24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _text: {fileID: 5214111089540455437}
+  _title: {fileID: 5214111089540455437}
   _contentPrefab: {fileID: 4959817715243906703, guid: e5ce79f690ac547168171feb5489539d, type: 3}
 --- !u!114 &873626363272416656
 MonoBehaviour:

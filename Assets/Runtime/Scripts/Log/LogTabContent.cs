@@ -24,12 +24,11 @@ namespace SmartDebugger
 
         private int _selected = -1;
         private float _normalizedPosition;
-        private float _scrollPosition;
+        private bool _isRequestBottomScroll;
         private LogReceiver _logReceiver;
 
         protected override void OnEnable()
         {
-            base.OnEnable();
             _logReceiver ??= SmartDebug.Instance.LogReceiver;
             _infoToggle.SetIsOnWithoutNotify(!_logReceiver.IsInfoFilter);
             _warnToggle.SetIsOnWithoutNotify(!_logReceiver.IsWarnFilter);
@@ -40,16 +39,14 @@ namespace SmartDebugger
             _logReceiver.OnAdded += OnLogAdded;
             UpdateFilter();
             UpdateCount();
+            _isRequestBottomScroll = true;
         }
 
         protected override void OnDisable()
         {
-            base.OnDisable();
             _logReceiver.OnAdding -= OnLogAdding;
             _logReceiver.OnAdded -= OnLogAdded;
         }
-
-        private bool _isRequestBottomScroll;
 
         private void OnLogAdding()
         {
@@ -64,11 +61,11 @@ namespace SmartDebugger
         private void UpdateCount()
         {
             var count = _logReceiver.InfoCount;
-            _infoCount.text = count < 1000 ? $"{count}" : "+999";
+            _infoCount.text = count < 1000 ? $"{count}" : "999+";
             count = _logReceiver.WarnCount;
-            _warnCount.text = count < 1000 ? $"{count}" : "+999";
+            _warnCount.text = count < 1000 ? $"{count}" : "999+";
             count = _logReceiver.ErrorCount;
-            _errorCount.text = count < 1000 ? $"{count}" : "+999";
+            _errorCount.text = count < 1000 ? $"{count}" : "999+";
         }
 
         public void UpdateFilter()
@@ -167,6 +164,12 @@ namespace SmartDebugger
         public GameObject GetCellView(int index)
         {
             return _listItem.gameObject;
+        }
+
+        public void ScrollTo(float normalizedPosition)
+        {
+            _isRequestBottomScroll = false;
+            _listScroll.Refresh(normalizedPosition);
         }
     }
 }

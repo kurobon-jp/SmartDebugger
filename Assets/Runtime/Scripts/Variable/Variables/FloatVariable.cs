@@ -67,10 +67,10 @@ namespace SmartDebugger
             public GameObject Build(IVariable variable, Transform parent)
             {
                 var prefab = Resources.Load<FloatSlider>("Prefabs/Fields/FloatSlider");
-                var view = Object.Instantiate(prefab, parent);
-                view.SetWidth(_width);
-                view.Bind((FloatVariable)variable);
-                return view.gameObject;
+                var field = Object.Instantiate(prefab, parent);
+                field.SetWidth(_width);
+                field.Bind((FloatVariable)variable);
+                return field.gameObject;
             }
         }
     }
