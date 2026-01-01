@@ -25,7 +25,8 @@ namespace SmartDebugger
 
         public override string SendTo => "Send to Slack";
 
-        private async void SendReportAsync(string description, string report, byte[] screenshot, Action<ReportResult> onResult)
+        private async void SendReportAsync(string description, string report, byte[] screenshot,
+            Action<ReportResult> onResult)
         {
             if (string.IsNullOrEmpty(_token) || string.IsNullOrEmpty(_channelId))
             {
@@ -58,7 +59,7 @@ namespace SmartDebugger
                     await PostMessageAsync(description);
                 }
 
-                onResult(new ReportResult(true, $"https://app.slack.com/archives/{_channelId}"));
+                onResult(ReportResult.Success(new Uri($"https://app.slack.com/archives/{_channelId}")));
             }
             catch (Exception e)
             {
@@ -147,7 +148,8 @@ namespace SmartDebugger
         }
 
 
-        public override void SendReport(string description, string report, byte[] screenshot, Action<ReportResult> onResult)
+        public override void SendReport(string description, string report, byte[] screenshot,
+            Action<ReportResult> onResult)
         {
             SendReportAsync(description, report, screenshot, onResult);
         }

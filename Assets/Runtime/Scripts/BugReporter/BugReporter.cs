@@ -27,13 +27,18 @@ namespace SmartDebugger
     {
         public static readonly ReportResult Failed = new(false);
 
-        public bool Success { get; }
-        public string ReportUrl { get; }
+        public bool IsSuccess { get; }
+        public Uri[] ReportUris { get; }
 
-        public ReportResult(bool success, string reportUrl = null)
+        public static ReportResult Success(params Uri[] reportUris)
         {
-            Success = success;
-            ReportUrl = reportUrl;
+            return new ReportResult(true, reportUris);
+        }
+
+        private ReportResult(bool success, params Uri[] reportUris)
+        {
+            IsSuccess = success;
+            ReportUris = reportUris;
         }
     }
 }

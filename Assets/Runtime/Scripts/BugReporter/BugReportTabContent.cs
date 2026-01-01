@@ -65,10 +65,10 @@ namespace SmartDebugger
 
             _buttonText.text = "Sending...";
             _sendButton.interactable = false;
-            _bugReporter.SendReport(description, report, screenShot, OnResult);
             _eventSystem = EventSystem.current;
             if (_eventSystem != null)
                 _eventSystem.enabled = false;
+            _bugReporter.SendReport(description, report, screenShot, OnResult);
         }
 
         private string CreateReport(string description)
@@ -109,11 +109,17 @@ namespace SmartDebugger
             _isSending = false;
             _buttonText.text = _bugReporter.SendTo;
             _sendButton.interactable = true;
-            if (result.Success && !string.IsNullOrEmpty(result.ReportUrl))
+            if (result.IsSuccess && result.ReportUris is { Length: > 0 })
             {
                 _openButton.gameObject.SetActive(true);
                 _openButton.onClick.RemoveAllListeners();
-                _openButton.onClick.AddListener(() => Application.OpenURL(result.ReportUrl));
+                _openButton.onClick.AddListener(() =>
+                {
+                    foreach (var uri in result.ReportUris)
+                    {
+                        Application.OpenURL(uri.ToString());
+                    }
+                });
             }
             else
             {
