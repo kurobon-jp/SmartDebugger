@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Text;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace SmartDebugger
@@ -15,6 +16,7 @@ namespace SmartDebugger
         [SerializeField] private Toggle _includeLogs;
 
         private BugReporter _bugReporter;
+        private EventSystem _eventSystem;
         private bool _isSending;
 
         protected override void OnEnable()
@@ -64,6 +66,9 @@ namespace SmartDebugger
             _buttonText.text = "Sending...";
             _sendButton.interactable = false;
             _bugReporter.SendReport(description, report, screenShot, OnResult);
+            _eventSystem = EventSystem.current;
+            if (_eventSystem != null)
+                _eventSystem.enabled = false;
         }
 
         private string CreateReport(string description)
@@ -114,6 +119,9 @@ namespace SmartDebugger
             {
                 _openButton.gameObject.SetActive(false);
             }
+
+            if (_eventSystem != null)
+                _eventSystem.enabled = true;
         }
     }
 }

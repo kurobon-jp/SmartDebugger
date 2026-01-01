@@ -44,7 +44,6 @@ namespace SmartDebugger
 
             _currentTapCount++;
             _lastTapTime = now;
-            Debug.Log(_currentTapCount);
             if (_currentTapCount >= _tapEvent.TapCount)
             {
                 _currentTapCount = 0;

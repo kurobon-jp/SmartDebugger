@@ -85,7 +85,7 @@ public class Example : MonoBehaviour, IFieldLayout
     /// <summary>
     /// Integer variable exposed to the debug UI.
     /// </summary>
-    public readonly IntVariable Int = new("Int", defaultValue: 50, maxValue: 100, serializeKey: "sd.int");
+    private readonly IntVariable _int = new("Int", defaultValue: 50, maxValue: 100, serializeKey: "sd.int");
 
     private void Start()
     {
@@ -103,10 +103,10 @@ public class Example : MonoBehaviour, IFieldLayout
         groups.AddGroup("Int", group =>
         {
             // Add a numeric input field
-            group.AddField(Int);
+            group.AddField(_int);
 
             // Add a slider bound to the same value
-            group.AddSlider(Int, width: 300f);
+            group.AddSlider(_int, width: 300f);
         });
     }
 }
@@ -188,7 +188,7 @@ If not found, `DefaultSDSettings` will be loaded as a fallback.
 |-------|-------------|
 | **Auto Initialize** | Automatically initializes SmartDebugger at runtime |
 | **Dont Destroy On Load** | Keeps the debugger across scene loads |
-| **Pause On Debug Menu** | Pauses the game (`Time.timeScale = 0`) while the debug menu is open |
+| **Pause On Debug Menu** | Pauses the game while the debug menu is open |
 | **Auto Generate EventSystem** | Automatically creates an `EventSystem` if none exists |
 
 ### Open / Close Triggers

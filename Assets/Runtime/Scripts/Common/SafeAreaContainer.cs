@@ -1,12 +1,31 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SmartDebuger
+namespace SmartDebugger
 {
     [RequireComponent(typeof(RectTransform), typeof(CanvasRenderer))]
     public class SafeAreaContainer : Graphic
     {
         [SerializeField] private RectTransform _content;
+
+        private ScreenOrientation _orientation;
+        private Resolution _resolution;
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            Resize();
+        }
+
+        private void Update()
+        {
+            if (_orientation == Screen.orientation &&
+                _resolution.width == Screen.currentResolution.width &&
+                _resolution.height == Screen.currentResolution.height) return;
+            _orientation = Screen.orientation;
+            _resolution = Screen.currentResolution;
+            Resize();
+        }
 
         private void Resize()
         {
@@ -24,12 +43,8 @@ namespace SmartDebuger
             _content.anchorMax = anchorMax;
             _content.offsetMin = Vector2.zero;
             _content.offsetMax = Vector2.zero;
-        }
 
-        protected override void OnRectTransformDimensionsChange()
-        {
-            base.OnRectTransformDimensionsChange();
-            Resize();
+            SetVerticesDirty();
         }
 
         protected override void OnPopulateMesh(VertexHelper vh)

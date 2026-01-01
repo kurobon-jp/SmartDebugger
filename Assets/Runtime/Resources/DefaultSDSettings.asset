@@ -15,11 +15,12 @@ MonoBehaviour:
   _autoInitialize: 1
   _dontDestroyOnLoad: 1
   _pauseOnDebugMenu: 0
+  _autoGenerateEventSystem: 1
   _openShortcut:
-    Key: 282
+    KeyCode: 282
     Modifiers: 3
   _closeShortcut:
-    Key: 27
+    KeyCode: 27
     Modifiers: 0
   _openTapEvent:
     TouchCount: 3
@@ -31,6 +32,5 @@ MonoBehaviour:
   - {fileID: 8180631821751222019, guid: 36528e095bcfe4d7c82d352edaaf20b5, type: 3}
   - {fileID: 4444016484104729482, guid: 0851510d8770a4d2c89ebed0c2858175, type: 3}
   - {fileID: 4222430269903736228, guid: dee743f055f6a462f98e257ea00786e7, type: 3}
-  _autoGenerateEventSystem: 1
   _canvasSortingOrder: 100
-  _bugReporter: {fileID: 11400000, guid: 932397bff62e5480ebfe92f3a72efc7e, type: 2}
+  _bugReporter: {fileID: 0}
