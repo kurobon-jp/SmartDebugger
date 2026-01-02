@@ -32,7 +32,7 @@ Example information:
 
 This is especially useful for collecting device-specific information during testing.
 
-![](media/system.png)
+<img src="media/system.png" width="800" />
 
 ---
 
@@ -51,7 +51,7 @@ Supported types:
 
 All values are reflected immediately when changed from the UI.
 
-![](media/variable.png)
+<img src="media/variable.png" width="800" />
 
 ### Code Example: Registering Debug Values
 
@@ -115,7 +115,7 @@ Features:
 
 This is extremely useful when debugging issues on devices.
 
-![](media/log.png)
+<img src="media/log.png" width="800" />
 
 ---
 
@@ -135,7 +135,7 @@ Use cases:
 
 This is intended for **quick inspection**, not deep profiling.
 
-![](media/profiler.png)
+<img src="media/profiler.png" width="800" />
 
 ---
 
@@ -152,7 +152,7 @@ Collected data may include:
 
 Ideal for QA and playtesting builds.
 
-![](media/bugreport.png)
+<img src="media/bugreport.png" width="800" />
 
 ---
 
@@ -171,7 +171,7 @@ If not found, `DefaultSDSettings` will be loaded as a fallback.
 
 ### General Settings
 
-![](media/setting.png)
+ <img src="media/setting.png" width="500" />
 
 | Setting | Description |
 |-------|-------------|
