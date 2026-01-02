@@ -10,13 +10,13 @@ public class SampleBugReporter : BugReporter
 
     public override void SendReport(string description, string report, byte[] screenshot, Action<ReportResult> onResult)
     {
-        var reportPath = Path.Combine(Application.persistentDataPath, "BugReport.txt");
-        var screenshotPath = Path.Combine(Application.persistentDataPath, "Screenshot.png");
+        var prefix = CreateFilePrefix();
+        var reportPath = Path.Combine(Application.persistentDataPath, $"{prefix}_BugReport.txt");
+        var screenshotPath = Path.Combine(Application.persistentDataPath, $"{prefix}_Screenshot.png");
         File.WriteAllText(reportPath, report);
         File.WriteAllBytes(screenshotPath, screenshot);
         onResult(ReportResult.Success(
-            new Uri(Uri.EscapeUriString(reportPath)),
-            new Uri(Uri.EscapeUriString(screenshotPath))
-        ));
+            "file://" + Uri.EscapeUriString(reportPath), 
+            "file://" + Uri.EscapeUriString(screenshotPath)));
     }
 }

@@ -109,15 +109,15 @@ namespace SmartDebugger
             _isSending = false;
             _buttonText.text = _bugReporter.SendTo;
             _sendButton.interactable = true;
-            if (result.IsSuccess && result.ReportUris is { Length: > 0 })
+            if (result.IsSuccess && result.ReportUrls is { Length: > 0 })
             {
                 _openButton.gameObject.SetActive(true);
                 _openButton.onClick.RemoveAllListeners();
                 _openButton.onClick.AddListener(() =>
                 {
-                    foreach (var uri in result.ReportUris)
+                    foreach (var url in result.ReportUrls)
                     {
-                        Application.OpenURL(uri.ToString());
+                        Application.OpenURL(url);
                     }
                 });
             }

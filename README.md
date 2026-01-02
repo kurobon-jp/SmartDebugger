@@ -16,19 +16,6 @@ It allows you to inspect system information, tweak debug values, view logs, moni
 
 ---
 
-## Target Use Case
-
-SmartDebugger is optimized for:
-
-- **Mobile development (Android / iOS)**
-- Debugging on **real devices** where the Unity Editor or Profiler is not available
-- QA / test builds
-- Internal debug menus
-
-It is **not intended as a replacement for Unity Profiler**, but as a practical runtime inspection tool.
-
----
-
 ## 1. SystemInfo
 
 Displays detailed runtime and device information.
@@ -184,6 +171,8 @@ If not found, `DefaultSDSettings` will be loaded as a fallback.
 
 ### General Settings
 
+![](media/setting.png)
+
 | Setting | Description |
 |-------|-------------|
 | **Auto Initialize** | Automatically initializes SmartDebugger at runtime |
@@ -235,6 +224,21 @@ This allows opening the debug menu on devices without hardware keyboards.
 |------|-------------|
 | **Main Tab Contents** | List of tabs shown in the debug menu |
 | **Canvas Sorting Order** | Sorting order of the SmartDebugger UI canvas |
+
+---
+
+## Installation (OpenUPM)
+
+1. Open the package manager settings by selecting the Unity menu option Edit > Project Settings > Package Manager.
+2. Add OpenUPM as a scoped registry to the Package Manager window:
+```
+Name: package.openupm.com
+URL: https://package.openupm.com
+Scopes: com.github.kurobon.smart_debugger
+```
+3. Open the package manager menu by selecting the Unity menu option Window > Package Manager.
+4. Set the manager scope drop-down to select My Registries.
+5. Select the SmartDebugger from the package list and press Install.
 
 ---
 

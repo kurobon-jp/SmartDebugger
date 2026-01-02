@@ -59,7 +59,7 @@ namespace SmartDebugger
                     await PostMessageAsync(description);
                 }
 
-                onResult(ReportResult.Success(new Uri($"https://app.slack.com/archives/{_channelId}")));
+                onResult(ReportResult.Success($"https://app.slack.com/archives/{_channelId}"));
             }
             catch (Exception e)
             {
