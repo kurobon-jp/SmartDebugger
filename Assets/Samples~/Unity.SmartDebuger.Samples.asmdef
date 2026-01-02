@@ -10,7 +10,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "!DISABLE_SMART_DEBUG"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
