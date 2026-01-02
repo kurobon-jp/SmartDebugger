@@ -27,7 +27,7 @@ namespace SmartDebugger
             }
         }
 
-        public bool IsShownCanvas => _canvas.gameObject.activeSelf;
+        public bool IsShownMenu => _canvas.gameObject.activeSelf;
 
         [RuntimeInitializeOnLoadMethod]
         private static void InitializeOnLoad()
@@ -114,7 +114,7 @@ namespace SmartDebugger
 
         public void ToggleMenu()
         {
-            _canvas.gameObject.SetActive(!IsShownCanvas);
+            _canvas.gameObject.SetActive(!IsShownMenu);
         }
 
         private void LateUpdate()
@@ -123,7 +123,7 @@ namespace SmartDebugger
             {
                 if (detector.IsTriggered())
                 {
-                    ToggleMenu();
+                    OpenMenu();
                     break;
                 }
             }
@@ -138,14 +138,14 @@ namespace SmartDebugger
             }
         }
 
-        public void AddFieldLayout(IFieldLayout category)
+        public void AddFieldLayout(IFieldLayout fieldLayout)
         {
-            _fieldLayouts.Add(category);
+            _fieldLayouts.Add(fieldLayout);
         }
 
-        public void RemoveFieldLayout(IFieldLayout category)
+        public void RemoveFieldLayout(IFieldLayout fieldLayout)
         {
-            _fieldLayouts.Remove(category);
+            _fieldLayouts.Remove(fieldLayout);
         }
     }
 }
