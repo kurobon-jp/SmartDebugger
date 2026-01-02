@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace SmartDebugger
@@ -22,8 +21,6 @@ namespace SmartDebugger
         public bool IsErrorFilter => (_filterTypes & LogTypes.Error) == LogTypes.Error;
 
         public Dictionary<int, LogEntry> Entries { get; } = new();
-        private readonly StringBuilder _stringBuilder = new();
-        private readonly HashSet<char> _missingCharas = new();
 
         public event Action OnAdding;
         public event Action OnAdded;

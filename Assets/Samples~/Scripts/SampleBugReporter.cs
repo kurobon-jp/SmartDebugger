@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using SmartDebugger;
 using UnityEngine;
@@ -11,12 +12,21 @@ public class SampleBugReporter : BugReporter
     public override void SendReport(string description, string report, byte[] screenshot, Action<ReportResult> onResult)
     {
         var prefix = CreateFilePrefix();
+        var reportUrls = new List<string>();
         var reportPath = Path.Combine(Application.persistentDataPath, $"{prefix}_BugReport.txt");
         var screenshotPath = Path.Combine(Application.persistentDataPath, $"{prefix}_Screenshot.png");
-        File.WriteAllText(reportPath, report);
-        File.WriteAllBytes(screenshotPath, screenshot);
-        onResult(ReportResult.Success(
-            "file://" + Uri.EscapeUriString(reportPath), 
-            "file://" + Uri.EscapeUriString(screenshotPath)));
+        if (!string.IsNullOrEmpty(report))
+        {
+            File.WriteAllText(reportPath, report);
+            reportUrls.Add("file://" + Uri.EscapeUriString(reportPath));
+        }
+
+        if (screenshot is { Length: > 0 })
+        {
+            File.WriteAllBytes(screenshotPath, screenshot);
+            reportUrls.Add("file://" + Uri.EscapeUriString(screenshotPath));
+        }
+
+        onResult(ReportResult.Success(reportUrls.ToArray()));
     }
 }

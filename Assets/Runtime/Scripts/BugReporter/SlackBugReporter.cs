@@ -18,7 +18,7 @@ namespace SmartDebugger
         private static readonly string CompleteUploadExternal = $"{SlackApi}/files.completeUploadExternal";
         private static readonly string PostMessage = $"{SlackApi}/chat.postMessage";
 
-        private readonly HttpClient _client = new();
+        private static readonly HttpClient Client = new();
 
         [SerializeField] private string _channelId;
         [SerializeField] private string _token;
@@ -86,7 +86,7 @@ namespace SmartDebugger
             form.Add(new StringContent(_token), "token");
             form.Add(new StringContent(filename), "filename");
             form.Add(new StringContent($"{data.Length}"), "length");
-            var response = await _client.PostAsync(GetUploadURLExternal, form);
+            var response = await Client.PostAsync(GetUploadURLExternal, form);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonUtility.FromJson<GetUploadURLExternalResult>(json);
@@ -99,7 +99,7 @@ namespace SmartDebugger
             using var stream = new MemoryStream(upload.Content);
             using var content = new StreamContent(stream);
             content.Headers.ContentType = new MediaTypeHeaderValue(upload.ContentType);
-            var response = await _client.PostAsync(res.upload_url, content);
+            var response = await Client.PostAsync(res.upload_url, content);
             response.EnsureSuccessStatusCode();
             Debug.Log($"Upload file. {upload.FileName} {res.file_id}");
             return res.file_id;
@@ -113,7 +113,7 @@ namespace SmartDebugger
             form.Add(new StringContent(description), "initial_comment");
             var filesJson = "[" + string.Join(",", fileIds.Select(id => $"{{\"id\":\"{id}\"}}")) + "]";
             form.Add(new StringContent(filesJson), "files");
-            var response = await _client.PostAsync(CompleteUploadExternal, form);
+            var response = await Client.PostAsync(CompleteUploadExternal, form);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonUtility.FromJson<ApiResult>(json);
@@ -133,7 +133,7 @@ namespace SmartDebugger
             form.Add(new StringContent(_token), "token");
             form.Add(new StringContent(_channelId), "channel");
             form.Add(new StringContent(description), "text");
-            var response = await _client.PostAsync(PostMessage, form);
+            var response = await Client.PostAsync(PostMessage, form);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonUtility.FromJson<ApiResult>(json);

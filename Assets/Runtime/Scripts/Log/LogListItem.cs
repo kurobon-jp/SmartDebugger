@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,8 +14,6 @@ namespace SmartDebugger
 
         private int _id;
         private Action<int> _onSelected;
-
-        private static readonly StringBuilder StringBuilder = new();
 
         public void Bind(in LogEntry entry, bool selected, Action<int> onSelected = null)
         {

@@ -2,7 +2,7 @@ using System;
 
 namespace SmartDebugger
 {
-    public static class RowExtensions
+    public static class GroupExtensions
     {
         public static void AddField(this FieldGroup group, TextVariable variable, float width = 200f)
         {

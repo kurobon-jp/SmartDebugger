@@ -24,7 +24,7 @@ namespace SmartDebugger
 
         protected void PushSample(Vector4 v)
         {
-            for (int i = _sampleCount - 1; i > 0; i--)
+            for (var i = _sampleCount - 1; i > 0; i--)
                 _samples[i] = _samples[i - 1];
 
             _samples[0] = v;

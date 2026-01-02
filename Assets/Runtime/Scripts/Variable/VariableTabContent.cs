@@ -36,9 +36,8 @@ namespace SmartDebugger
             if (fieldLayouts.Count > 0)
             {
                 _current ??= fieldLayouts[0];
-                for (var i = 0; i < fieldLayouts.Count; i++)
+                foreach (var fieldLayout in fieldLayouts)
                 {
-                    var fieldLayout = fieldLayouts[i];
                     CreateTab(fieldLayout);
                 }
             }

@@ -39,7 +39,7 @@ namespace SmartDebugger
 #if UNITY_2021_2_OR_NEWER
                 _targetFrameTime = 1f / (float)Screen.currentResolution.refreshRateRatio.value;
 #else
-            _targetFrameTime = 1f / Screen.currentResolution.refreshRate;
+                _targetFrameTime = 1f / Screen.currentResolution.refreshRate;
 #endif
                 _hasFixedFrameRate = QualitySettings.vSyncCount > 0;
             }
