@@ -171,7 +171,7 @@ If not found, `DefaultSDSettings` will be loaded as a fallback.
 
 ### General Settings
 
- <img src="media/setting.png" width="500" />
+<img src="media/setting.png" width="500" />
 
 | Setting | Description |
 |-------|-------------|
@@ -232,13 +232,15 @@ This allows opening the debug menu on devices without hardware keyboards.
 1. Open the package manager settings by selecting the Unity menu option Edit > Project Settings > Package Manager.
 2. Add OpenUPM as a scoped registry to the Package Manager window:
 ```
-Name: package.openupm.com
+Name: OpenUPM
 URL: https://package.openupm.com
-Scopes: com.github.kurobon.smart_debugger
+Scopes: com.github.kurobon
 ```
 3. Open the package manager menu by selecting the Unity menu option Window > Package Manager.
 4. Set the manager scope drop-down to select My Registries.
 5. Select the SmartDebugger from the package list and press Install.
+
+<img src="media/install1.png" width="300" /> <img src="media/install2.png" width="300" />
 
 ---
 

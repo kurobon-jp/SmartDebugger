@@ -34,10 +34,10 @@ namespace SmartDebugger
             var anchorMin = safeArea.position;
             var anchorMax = safeArea.position + safeArea.size;
 
-            anchorMin.x /= Screen.width;
-            anchorMin.y /= Screen.height;
-            anchorMax.x /= Screen.width;
-            anchorMax.y /= Screen.height;
+            anchorMin.x =　Mathf.Clamp01(anchorMin.x / Screen.width);
+            anchorMin.y = Mathf.Clamp01(anchorMin.y / Screen.height);
+            anchorMax.x = Mathf.Clamp01(anchorMax.x / Screen.width);
+            anchorMax.y = Mathf.Clamp01(anchorMax.y / Screen.height);
 
             _content.anchorMin = anchorMin;
             _content.anchorMax = anchorMax;
