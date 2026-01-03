@@ -35,8 +35,8 @@ namespace SmartDebugger
 
         private void OnLogMessageReceived(string condition, string stackTrace, LogType type)
         {
-            HasError = true;
             if (type is not (LogType.Error or LogType.Exception or LogType.Assert) || _isBlinking) return;
+            HasError = true;
             StopAllCoroutines();
             StartCoroutine(Blink());
         }
