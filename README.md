@@ -42,12 +42,14 @@ You can register debug parameters and **modify them at runtime without changing 
 
 Supported types:
 
-- bool `(Checkbox)`
-- int `(InputField, Slider)`
-- float `(InputField, Slider)`
-- string `(InputField)`
-- enum `(Dropdown)`
-- List `(Dropdown)`
+| Type | Variable | Field |
+|------|-------------|----|
+| bool | BoolVariable | `(Checkbox)`
+| int | IntVariable | `(InputField, Slider)`
+| float | FloatVariable | `(InputField, Slider)`
+| string | TextVariable | `(InputField)`
+| enum | EnumVariable | `(Dropdown)`
+| List | SelectionVariable | `(Dropdown)`
 
 All values are reflected immediately when changed from the UI.
 
