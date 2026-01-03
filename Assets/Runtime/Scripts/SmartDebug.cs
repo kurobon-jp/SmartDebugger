@@ -104,7 +104,14 @@ namespace SmartDebugger
 
         public void OpenMenu()
         {
-            _canvas.gameObject.SetActive(true);
+            if (ErrorIndicator.HasError)
+            {
+                _canvas.Show<LogTabContent>();
+            }
+            else
+            {
+                _canvas.Show();
+            }
         }
 
         public void CloseMenu()

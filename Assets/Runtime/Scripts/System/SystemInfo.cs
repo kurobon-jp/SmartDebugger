@@ -154,15 +154,11 @@ namespace SmartDebugger
 #if UNITY_IOS
         var deviceModel = UnityEngine.iOS.Device.generation.ToString();
         var systemVersion = UnityEngine.iOS.Device.systemVersion;
-        var batteryLevel = UnityEngine.iOS.Device.batteryLevel;
-        var batteryStatus = UnityEngine.iOS.Device.batteryStatus;
-        var memory = UnityEngine.iOS.Device.systemMemorySize;
+        var vendorIdentifier = UnityEngine.iOS.Device.vendorIdentifier;
         values.Add("iOS Info",
                 $"Device Model: {deviceModel}\n" +
                 $"iOS Version: {systemVersion}\n" +
-                $"Battery Level: {batteryLevel}\n" +
-                $"Battery Status: {batteryStatus}\n" +
-                $"System Memory: {memory} MB"
+                $"Vendor Identifier: {vendorIdentifier}"
         );
 #endif
         }

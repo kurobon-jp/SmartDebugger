@@ -1005,6 +1005,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _text: {fileID: 4661631154506122580}
   _icon: {fileID: 2597263061764697357}
+  _toggle: {fileID: 2610333102870002235}
 --- !u!114 &7098874276235180678
 MonoBehaviour:
   m_ObjectHideFlags: 0

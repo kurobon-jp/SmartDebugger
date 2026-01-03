@@ -24,7 +24,8 @@ namespace SmartDebugger
         [SerializeField] private bool _dontDestroyOnLoad = true;
         [SerializeField] private bool _pauseOnDebugMenu;
         [SerializeField] private bool _autoGenerateEventSystem = true;
-
+        [SerializeField] private bool _showErrorIndicator = true;
+        
         [SerializeField] private KeyShortcut _openShortcut = new()
         {
             KeyCode = KeyCode.F1,
@@ -51,6 +52,7 @@ namespace SmartDebugger
         public bool IsDontDestroyOnLoad => _dontDestroyOnLoad;
         public bool IsPauseOnDebugMenu => _pauseOnDebugMenu;
         public bool IsAutoGenerateEventSystem => _autoGenerateEventSystem;
+        public bool IsShowErrorIndicator => _showErrorIndicator;
         public KeyShortcut OpenShortcut => _openShortcut;
         public KeyShortcut CloseShortcut => _closeShortcut;
         public TapEvent OpenTapEvent => _openTapEvent;

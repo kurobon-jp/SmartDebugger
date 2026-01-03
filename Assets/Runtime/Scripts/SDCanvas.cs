@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,9 +13,11 @@ namespace SmartDebugger
         [SerializeField] private MainTab _mainTab;
         [SerializeField] private Transform _contentParent;
 
+        private readonly List<MainTab> _mainTabs = new();
+
         private FloatVariable ScaleFactor { get; } = new("ScaleFactor", 1f, 0.5f, 1.5f, "sd.scale_factor");
 
-        protected override void Start()
+        protected override void Awake()
         {
             _canvasScaler.scaleFactor = ScaleFactor.Value;
             _canvas.sortingOrder = SDSettings.Instance.CanvasSortingOrder;
@@ -28,10 +31,34 @@ namespace SmartDebugger
                 }
 
                 var mainTab = Instantiate(_mainTab, _mainTab.transform.parent);
-                mainTab.Bind(prefab, _contentParent, i == 0);
+                mainTab.Bind(prefab, _contentParent);
+                mainTab.IsOn = i == 0;
+                _mainTabs.Add(mainTab);
             }
 
             _mainTab.gameObject.SetActive(false);
+        }
+
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void Show<T>()
+        {
+            Show();
+            var tabContents = SDSettings.Instance.MainTabContents;
+            for (var i = 0; i < tabContents.Length; i++)
+            {
+                if (tabContents[i].GetType() != typeof(T)) continue;
+                _mainTabs[i].IsOn = true;
+                break;
+            }
+        }
+
+        public void Hide()
+        {
+            gameObject.SetActive(false);
         }
 
         public void ZoomIn()

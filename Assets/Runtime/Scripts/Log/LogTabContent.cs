@@ -40,12 +40,14 @@ namespace SmartDebugger
             UpdateFilter();
             UpdateCount();
             _isRequestBottomScroll = true;
+            ErrorIndicator.Clear();
         }
 
         protected override void OnDisable()
         {
             _logReceiver.OnAdding -= OnLogAdding;
             _logReceiver.OnAdded -= OnLogAdded;
+            ErrorIndicator.Clear();
         }
 
         private void OnLogAdding()

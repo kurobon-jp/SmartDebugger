@@ -16,6 +16,7 @@ MonoBehaviour:
   _dontDestroyOnLoad: 1
   _pauseOnDebugMenu: 0
   _autoGenerateEventSystem: 1
+  _showErrorIndicator: 1
   _openShortcut:
     KeyCode: 282
     Modifiers: 3

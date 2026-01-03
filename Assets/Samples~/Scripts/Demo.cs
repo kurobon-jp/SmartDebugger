@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SmartDebugger;
 using UnityEngine;
@@ -10,6 +11,23 @@ public class Demo : MonoBehaviour
         SmartDebug.Instance.AddFieldLayout(new ShapeFields());
         SmartDebug.Instance.AddFieldLayout(new CameraFields());
         SmartDebug.Instance.AddFieldLayout(new SupportedTypeFields());
+    }
+
+    private void Update()
+    {
+        var frameCount = Time.frameCount;
+        if (frameCount % 400 == 0)
+        {
+            Debug.LogError($"Error log {frameCount}");
+        }
+        else if (frameCount % 300 == 0)
+        {
+            Debug.LogWarning($"Warning log {frameCount}");
+        }
+        else if (frameCount % 200 == 0)
+        {
+            Debug.Log($"Info log {frameCount}");
+        }
     }
 
     public class SupportedTypeFields : IFieldLayout

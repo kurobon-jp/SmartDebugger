@@ -7,12 +7,19 @@ namespace SmartDebugger
     {
         [SerializeField] private Text _text;
         [SerializeField] private Image _icon;
-
+        [SerializeField] private Toggle _toggle;
+        
         private MainTabContent _prefab;
         private Transform _contentParent;
         private GameObject _content;
 
-        public void Bind(MainTabContent prefab, Transform contentParent, bool isOn)
+        public bool IsOn
+        {
+            get => _toggle.isOn;
+            set => _toggle.isOn = value;
+        }
+
+        public void Bind(MainTabContent prefab, Transform contentParent)
         {
             _prefab = prefab;
             _contentParent = contentParent;
@@ -25,15 +32,6 @@ namespace SmartDebugger
             else
             {
                 _icon.gameObject.SetActive(false);
-            }
-
-            if (isOn)
-            {
-                Show();
-            }
-            else
-            {
-                Hide();
             }
         }
 
