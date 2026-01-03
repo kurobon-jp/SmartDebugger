@@ -18,13 +18,13 @@ public class SampleBugReporter : BugReporter
         if (!string.IsNullOrEmpty(report))
         {
             File.WriteAllText(reportPath, report);
-            reportUrls.Add("file://" + Uri.EscapeUriString(reportPath));
+            reportUrls.Add("file:///" + Uri.EscapeUriString(reportPath));
         }
 
         if (screenshot is { Length: > 0 })
         {
             File.WriteAllBytes(screenshotPath, screenshot);
-            reportUrls.Add("file://" + Uri.EscapeUriString(screenshotPath));
+            reportUrls.Add("file:///" + Uri.EscapeUriString(screenshotPath));
         }
 
         onResult(ReportResult.Success(reportUrls.ToArray()));

@@ -102,9 +102,9 @@ namespace SmartDebugger
             _instance = null;
         }
 
-        public void OpenMenu()
+        public void OpenMenu(bool showLog = false)
         {
-            if (ErrorIndicator.HasError)
+            if (showLog)
             {
                 _canvas.Show<LogTabContent>();
             }
@@ -116,7 +116,7 @@ namespace SmartDebugger
 
         public void CloseMenu()
         {
-            _canvas.gameObject.SetActive(false);
+            _canvas.Hide();
         }
 
         public void ToggleMenu()
@@ -130,7 +130,7 @@ namespace SmartDebugger
             {
                 if (detector.IsTriggered())
                 {
-                    OpenMenu();
+                    OpenMenu(ErrorIndicator.HasError);
                     break;
                 }
             }
