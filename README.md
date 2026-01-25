@@ -168,8 +168,8 @@ Create it from the Unity menu:
 Create → SmartDebugger → SD Settings
 ```
 
-The asset must be placed under a **Resources** folder.
-If not found, `DefaultSDSettings` will be loaded as a fallback.
+SDSettings must be registered in the preloaded assets.
+<img src="media/preload.png" width="500" />
 
 ### General Settings
 
