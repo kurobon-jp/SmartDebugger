@@ -31,7 +31,7 @@ Material:
     m_Floats:
     - _LineWidth: 0.01
     m_Colors:
-    - _BackgroundColor: {r: 0, g: 0, b: 0, a: 0.5019608}
+    - _BackgroundColor: {r: 0, g: 0, b: 0, a: 0.78431374}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _MonoLineColor: {r: 0.29999998, g: 0.9, b: 1, a: 1}
     - _TotalLineColor: {r: 1, g: 0.6, b: 0.19999996, a: 1}

@@ -41,14 +41,12 @@ namespace SmartDebugger
         public static void Initialize()
         {
             if (_instance != null) return;
-            var prefab = Resources.Load<GameObject>("Prefabs/SmartDebug");
-            var go = Instantiate(prefab);
+            var prefab = SDSettings.Instance.LoadPrefab<SmartDebug>("SmartDebug");
+            _instance = Instantiate(prefab);
             if (SDSettings.Instance.IsDontDestroyOnLoad)
             {
-                DontDestroyOnLoad(go);
+                DontDestroyOnLoad(_instance.gameObject);
             }
-
-            _instance = go.GetComponent<SmartDebug>();
         }
 
         private void Awake()

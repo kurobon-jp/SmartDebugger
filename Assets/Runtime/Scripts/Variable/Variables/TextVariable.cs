@@ -4,8 +4,9 @@ namespace SmartDebugger
 {
     public class TextVariable : SerializeVariable<string>
     {
-        public TextVariable(string title, string serializeKey = null, string defaultValue = "")
-            : base(title, defaultValue, serializeKey)
+        public TextVariable(string title, string serializeKey = null, string defaultValue = "",
+            bool interactable = true)
+            : base(title, defaultValue, serializeKey, interactable)
         {
         }
 
@@ -33,7 +34,7 @@ namespace SmartDebugger
 
             public GameObject Build(IVariable variable, Transform parent)
             {
-                var prefab = Resources.Load<TextField>("Prefabs/Fields/TextField");
+                var prefab = SDSettings.Instance.LoadPrefab<TextField>("TextField");
                 var field = Object.Instantiate(prefab, parent);
                 field.SetWidth(_width);
                 field.Bind((TextVariable)variable);

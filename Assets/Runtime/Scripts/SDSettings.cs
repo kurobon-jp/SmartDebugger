@@ -1,5 +1,7 @@
+using System;
 using System.IO;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SmartDebugger
 {
@@ -8,24 +10,16 @@ namespace SmartDebugger
     {
         private static SDSettings _instance;
 
-        public static SDSettings Instance
-        {
-            get
-            {
-                if (_instance != null) return _instance;
-                _instance = Resources.Load<SDSettings>("SDSettings");
-                if (_instance != null) return _instance;
-                _instance = Resources.Load<SDSettings>("DefaultSDSettings");
-                return _instance != null ? _instance : throw new FileNotFoundException("SDSettings not found");
-            }
-        }
+        public static SDSettings Instance => _instance == null
+            ? throw new Exception("SDSettings is not preloaded. Please make sure it is included in Preloaded Assets.")
+            : _instance;
 
         [SerializeField] private bool _autoInitialize = true;
         [SerializeField] private bool _dontDestroyOnLoad = true;
         [SerializeField] private bool _pauseOnDebugMenu;
         [SerializeField] private bool _autoGenerateEventSystem = true;
         [SerializeField] private bool _showErrorIndicator = true;
-        
+
         [SerializeField] private KeyShortcut _openShortcut = new()
         {
             KeyCode = KeyCode.F1,
@@ -45,6 +39,7 @@ namespace SmartDebugger
         };
 
         [SerializeField] private MainTabContent[] _mainTabContents;
+        [SerializeField] private GameObject[] _prefabs;
         [SerializeField] private int _canvasSortingOrder = 100;
         [SerializeField] private BugReporter _bugReporter;
 
@@ -59,5 +54,31 @@ namespace SmartDebugger
         public MainTabContent[] MainTabContents => _mainTabContents;
         public int CanvasSortingOrder => _canvasSortingOrder;
         public BugReporter BugReporter => _bugReporter;
+
+        private void OnEnable()
+        {
+#if UNITY_EDITOR
+            var preloadedAssets = UnityEditor.PlayerSettings.GetPreloadedAssets();
+            foreach (var asset in preloadedAssets)
+            {
+                if (asset != this) continue;
+                _instance = this;
+                break;
+            }
+#else
+            _instance = this;
+#endif
+        }
+
+        public T LoadPrefab<T>(string prefabName) where T : Object
+        {
+            foreach (var prefab in _prefabs)
+            {
+                if (prefab.name != prefabName) continue;
+                if (prefab is T t || prefab.TryGetComponent(out t)) return t;
+            }
+
+            throw new FileNotFoundException($"Prefab of type {typeof(T)} not found in SDSettings.");
+        }
     }
 }

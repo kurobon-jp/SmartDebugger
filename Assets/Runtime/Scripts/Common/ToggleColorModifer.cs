@@ -21,8 +21,8 @@ namespace SmartDebugger
             }
         }
 
-        [SerializeField] Toggle _toggle;
-        [SerializeField] ToggleColor[] _toggleColors;
+        [SerializeField] private Toggle _toggle;
+        [SerializeField] private ToggleColor[] _toggleColors;
 
         private void Awake()
         {

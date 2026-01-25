@@ -14,7 +14,8 @@ namespace SmartDebugger
             float defaultValue = 0f,
             float minValue = 0f,
             float maxValue = 1f,
-            string serializeKey = null) : base(title, defaultValue, serializeKey)
+            string serializeKey = null,
+            bool interactable = true) : base(title, defaultValue, serializeKey, interactable)
         {
             MinValue = minValue;
             MaxValue = maxValue;
@@ -47,7 +48,7 @@ namespace SmartDebugger
 
             public GameObject Build(IVariable variable, Transform parent)
             {
-                var prefab = Resources.Load<FloatField>("Prefabs/Fields/FloatField");
+                var prefab = SDSettings.Instance.LoadPrefab<FloatField>("FloatField");
                 var view = Object.Instantiate(prefab, parent);
                 view.SetWidth(_width);
                 view.Bind((FloatVariable)variable);
@@ -66,7 +67,7 @@ namespace SmartDebugger
 
             public GameObject Build(IVariable variable, Transform parent)
             {
-                var prefab = Resources.Load<FloatSlider>("Prefabs/Fields/FloatSlider");
+                var prefab = SDSettings.Instance.LoadPrefab<FloatSlider>("FloatSlider");
                 var field = Object.Instantiate(prefab, parent);
                 field.SetWidth(_width);
                 field.Bind((FloatVariable)variable);
