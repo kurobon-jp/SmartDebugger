@@ -15,8 +15,11 @@ namespace SmartDebugger
             _variable = variable;
             _title.text = variable.Title;
             _input.text = variable.TextValue;
-            _variable.OnValueChanged -= OnValueChanged;
-            _variable.OnValueChanged += OnValueChanged;
+            _input.interactable = variable.Interactable;
+            variable.OnValueChanged -= OnValueChanged;
+            variable.OnValueChanged += OnValueChanged;
+            variable.OnInteractabilityChanged -= OnInteractabilityChanged;
+            variable.OnInteractabilityChanged += OnInteractabilityChanged;
         }
 
         protected override void OnEnable()
@@ -29,11 +32,17 @@ namespace SmartDebugger
         {
             if (_variable == null) return;
             _variable.OnValueChanged -= OnValueChanged;
+            _variable.OnInteractabilityChanged -= OnInteractabilityChanged;
         }
 
         private void OnValueChanged(SerializeVariable<float> variable)
         {
             _input.text = variable.TextValue;
+        }
+
+        private void OnInteractabilityChanged(bool interactable)
+        {
+            _input.interactable = interactable;
         }
 
         public void OnEditEnd()

@@ -40,7 +40,7 @@ namespace SmartDebugger
 
         internal void Build(Transform parent)
         {
-            var prefab = Resources.Load<FieldGroupView>("Prefabs/Fields/FieldGroup");
+            var prefab = SDSettings.Instance.LoadPrefab<FieldGroupView>("FieldGroup");
             _view = UnityEngine.Object.Instantiate(prefab, parent);
             Rebuild();
         }

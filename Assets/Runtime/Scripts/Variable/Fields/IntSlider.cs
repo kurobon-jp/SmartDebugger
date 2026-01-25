@@ -19,9 +19,12 @@ namespace SmartDebugger
             _slider.minValue = variable.MinValue;
             _slider.maxValue = variable.MaxValue;
             _slider.value = variable.Value;
+            _slider.interactable = variable.Interactable;
             _value.text = variable.TextValue;
             variable.OnValueChanged -= OnValueChanged;
             variable.OnValueChanged += OnValueChanged;
+            variable.OnInteractabilityChanged -= OnInteractabilityChanged;
+            variable.OnInteractabilityChanged += OnInteractabilityChanged;
         }
 
         protected override void OnEnable()
@@ -30,9 +33,11 @@ namespace SmartDebugger
             Bind(_variable);
         }
 
-        protected override void OnDestroy()
+        protected override void OnDisable()
         {
+            if (_variable == null) return;
             _variable.OnValueChanged -= OnValueChanged;
+            _variable.OnInteractabilityChanged -= OnInteractabilityChanged;
         }
 
         private void OnValueChanged(SerializeVariable<int> variable)
@@ -40,6 +45,11 @@ namespace SmartDebugger
             if (!isActiveAndEnabled) return;
             _slider.SetValueWithoutNotify(variable.Value);
             _value.text = variable.TextValue;
+        }
+
+        private void OnInteractabilityChanged(bool interactable)
+        {
+            _slider.interactable = interactable;
         }
 
         public void OnSlide(float value)

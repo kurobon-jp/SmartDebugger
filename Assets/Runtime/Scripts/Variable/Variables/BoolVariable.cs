@@ -4,8 +4,12 @@ namespace SmartDebugger
 {
     public class BoolVariable : SerializeVariable<bool>
     {
-        public BoolVariable(string title, bool defaultValue = false, string serializeKey = null) : base(title,
-            defaultValue, serializeKey)
+        public BoolVariable(
+            string title,
+            bool defaultValue = false,
+            string serializeKey = null,
+            bool interactable = true) : base(title,
+            defaultValue, serializeKey, interactable)
         {
         }
 
@@ -33,7 +37,7 @@ namespace SmartDebugger
 
             public GameObject Build(IVariable variable, Transform parent)
             {
-                var prefab = Resources.Load<ToggleField>("Prefabs/Fields/ToggleField");
+                var prefab = SDSettings.Instance.LoadPrefab<ToggleField>("ToggleField");
                 var field = Object.Instantiate(prefab, parent);
                 field.SetWidth(_width);
                 field.Bind((BoolVariable)variable);

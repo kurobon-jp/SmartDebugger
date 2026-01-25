@@ -16,7 +16,12 @@ namespace SmartDebugger
             string title,
             Func<string[]> getter,
             int defaultValue = 0,
-            string serializeKey = null) : base(title, defaultValue, serializeKey: serializeKey)
+            string serializeKey = null,
+            bool interactable = true) : base(
+            title,
+            defaultValue,
+            serializeKey: serializeKey,
+            interactable: interactable)
         {
             _getter = getter;
         }
@@ -38,7 +43,7 @@ namespace SmartDebugger
 
             public GameObject Build(IVariable variable, Transform parent)
             {
-                var prefab = Resources.Load<DropdownField>("Prefabs/Fields/DropdownField");
+                var prefab = SDSettings.Instance.LoadPrefab<DropdownField>("DropdownField");
                 var field = Object.Instantiate(prefab, parent);
                 field.Bind((SelectionVariable)variable);
                 field.SetWidth(_width);

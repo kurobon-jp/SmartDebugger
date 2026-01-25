@@ -18,8 +18,11 @@ namespace SmartDebugger
             _title.text = variable.Title;
             _dropdown.options = variable.Selections.Select(x => new Dropdown.OptionData(x, _checkMark)).ToList();
             _dropdown.value = variable.Value;
+            _dropdown.interactable = variable.Interactable;
             variable.OnValueChanged -= OnValueChanged;
             variable.OnValueChanged += OnValueChanged;
+            variable.OnInteractabilityChanged -= OnInteractabilityChanged;
+            variable.OnInteractabilityChanged += OnInteractabilityChanged;
         }
 
         protected override void OnEnable()
@@ -32,11 +35,17 @@ namespace SmartDebugger
         {
             if (_variable == null) return;
             _variable.OnValueChanged -= OnValueChanged;
+            _variable.OnInteractabilityChanged -= OnInteractabilityChanged;
         }
 
         private void OnValueChanged(SerializeVariable<int> variable)
         {
             _dropdown.value = variable.Value;
+        }
+
+        private void OnInteractabilityChanged(bool interactable)
+        {
+            _dropdown.interactable = interactable;
         }
 
         public void OnSelectionChanged(int value)

@@ -11,7 +11,7 @@ namespace SmartDebugger
         {
             public GameObject Build(IVariable variable, Transform parent)
             {
-                var prefab = Resources.Load<GameObject>("Prefabs/Fields/LineBreak");
+                var prefab = SDSettings.Instance.LoadPrefab<GameObject>("LineBreak");
                 return Object.Instantiate(prefab, parent);
             }
         }

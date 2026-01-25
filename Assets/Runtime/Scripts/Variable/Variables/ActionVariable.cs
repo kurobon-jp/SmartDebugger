@@ -8,7 +8,7 @@ namespace SmartDebugger
     {
         private readonly Action _action;
 
-        public ActionVariable(string title, Action action) : base(title)
+        public ActionVariable(string title, Action action, bool interactable = true) : base(title, interactable: interactable)
         {
             _action = action;
         }
@@ -29,7 +29,7 @@ namespace SmartDebugger
 
             public GameObject Build(IVariable variable, Transform parent)
             {
-                var prefab = Resources.Load<ActionButton>("Prefabs/Fields/ActionButton");
+                var prefab = SDSettings.Instance.LoadPrefab<ActionButton>("ActionButton");
                 var field = Object.Instantiate(prefab, parent);
                 field.Bind((ActionVariable)variable);
                 field.SetWidth(_width);

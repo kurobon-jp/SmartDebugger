@@ -19,6 +19,8 @@ namespace SmartDebugger
         private string _title;
         private bool _interactable = true;
 
+        public event Action<bool> OnInteractabilityChanged;
+
         public string Title
         {
             get => _title;
@@ -28,7 +30,11 @@ namespace SmartDebugger
         public bool Interactable
         {
             get => _interactable;
-            set => _interactable = value;
+            set
+            {
+                _interactable = value;
+                OnInteractabilityChanged?.Invoke(value);
+            }
         }
 
         protected BaseVariable(string title, bool interactable = true)
@@ -67,7 +73,8 @@ namespace SmartDebugger
 
         public event Action<SerializeVariable<T>> OnValueChanged;
 
-        protected SerializeVariable(string title, T defaultValue = default, string serializeKey = null) : base(title)
+        protected SerializeVariable(string title, T defaultValue = default, string serializeKey = null,
+            bool interactable = true) : base(title, interactable)
         {
             _defaultValue = defaultValue;
             SerializeKey = serializeKey;
