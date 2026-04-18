@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SmartDebugger
@@ -6,8 +6,6 @@ namespace SmartDebugger
     public class SystemTabContent : MainTabContent
     {
         [SerializeField] private SystemInfoGroup _group;
-
-        private readonly Dictionary<string, SystemInfoGroup> _groups = new();
 
         protected override void OnEnable()
         {
@@ -21,21 +19,13 @@ namespace SmartDebugger
 
         private void Refresh()
         {
-            var values = SystemInfo.GetSystemInfoText();
-            foreach (var value in values)
+            var systemInfos = SystemInfo.GetSystemInfoText();
+            var keys = systemInfos.Keys.ToList();
+            _group.PooledInstantiate(keys.Count, (i, group) =>
             {
-                if (!_groups.TryGetValue(value.Key, out var group))
-                {
-                    var go = Instantiate(_group.gameObject, _group.transform.parent);
-                    go.SetActive(true);
-                    group = go.GetComponent<SystemInfoGroup>();
-                    _groups.Add(value.Key, group);
-                }
-
-                group.Bind(value.Key, value.Value);
-            }
-
-            _group.gameObject.SetActive(false);
+                var key = keys[i];
+                group.Bind(key, systemInfos[key]);
+            });
         }
     }
 }
