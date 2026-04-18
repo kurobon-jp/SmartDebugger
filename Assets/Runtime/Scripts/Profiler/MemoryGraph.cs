@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace SmartDebugger
 {
-    public sealed class MemoryGraph : GraphShaderBase
+    internal sealed class MemoryGraph : GraphShaderBase
     {
         [SerializeField] private Text _monoText;
         [SerializeField] private Text _totalText;

@@ -1,6 +1,6 @@
 namespace SmartDebugger
 {
-    public interface IEventDetector
+    internal interface IEventDetector
     {
         bool IsTriggered();
     }

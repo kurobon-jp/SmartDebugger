@@ -1,6 +1,6 @@
 namespace SmartDebugger
 {
-    public static class EventDetectorFactory
+    internal static class EventDetectorFactory
     {
         public static IEventDetector CreateKeyEventDetector(KeyShortcut shortcut)
         {

@@ -1,6 +1,6 @@
 namespace SmartDebugger
 {
-    public class FloatQueue : IndexedQueue<float>
+    internal class FloatQueue : IndexedQueue<float>
     {
         public float Current { get; private set; }
         public float Min { get; private set; }

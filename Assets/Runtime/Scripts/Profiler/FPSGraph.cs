@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace SmartDebugger
 {
-    public sealed class FPSGraph : GraphShaderBase
+    internal sealed class FPSGraph : GraphShaderBase
     {
         [SerializeField] private float _spikeScale = 2f;
         [SerializeField] private float _adaptiveSmooth = 0.1f;

@@ -6,7 +6,7 @@ namespace SmartDebugger
 {
     using UnityEngine.InputSystem;
 
-    public sealed class InputSystemKeyEventDetector : IEventDetector
+    internal sealed class InputSystemKeyEventDetector : IEventDetector
     {
         private readonly Key _key;
         private readonly ModifierKeys _modifiers;
@@ -76,13 +76,13 @@ namespace SmartDebugger
             { KeyCode.DownArrow, Key.DownArrow },
         };
 
-        public InputSystemKeyEventDetector(KeyShortcut shortcut)
+        internal InputSystemKeyEventDetector(KeyShortcut shortcut)
         {
             _key = Keymap[shortcut.KeyCode];
             _modifiers = shortcut.Modifiers;
         }
 
-        public bool IsTriggered()
+        bool IEventDetector.IsTriggered()
         {
             var keyboard = Keyboard.current;
             if (keyboard == null) return false;

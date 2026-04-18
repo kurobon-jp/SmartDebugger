@@ -2,16 +2,16 @@ using UnityEngine;
 
 namespace SmartDebugger
 {
-    public sealed class LegacyKeyEventDetector : IEventDetector
+    internal sealed class LegacyKeyEventDetector : IEventDetector
     {
         private readonly KeyShortcut _shortcut;
 
-        public LegacyKeyEventDetector(KeyShortcut shortcut)
+        internal LegacyKeyEventDetector(KeyShortcut shortcut)
         {
             _shortcut = shortcut;
         }
 
-        public bool IsTriggered()
+        bool IEventDetector.IsTriggered()
         {
             if (!Input.GetKeyDown(_shortcut.KeyCode))
                 return false;

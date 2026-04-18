@@ -2,18 +2,18 @@ using UnityEngine;
 
 namespace SmartDebugger
 {
-    public sealed class LegacyMultiTapEventDetector : IEventDetector
+    internal sealed class LegacyMultiTapEventDetector : IEventDetector
     {
         private readonly TapEvent _tapEvent;
         private int _currentTapCount = 0;
         private float _lastTapTime = 0f;
 
-        public LegacyMultiTapEventDetector(TapEvent tapEvent)
+        internal LegacyMultiTapEventDetector(TapEvent tapEvent)
         {
             _tapEvent = tapEvent;
         }
 
-        public bool IsTriggered()
+        bool IEventDetector.IsTriggered()
         {
             if (Input.touchCount != _tapEvent.TouchCount)
                 return false;

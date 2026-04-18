@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace SmartDebugger
 {
     [RequireComponent(typeof(Image))]
-    public abstract class GraphShaderBase : MonoBehaviour
+    internal abstract class GraphShaderBase : MonoBehaviour
     {
         private static readonly int Samples = Shader.PropertyToID("_Samples");
         private static readonly int SampleCount = Shader.PropertyToID("_SampleCount");

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SmartDebugger
 {
-    public class IndexedQueue<T> : IEnumerable<T>
+    internal class IndexedQueue<T> : IEnumerable<T>
     {
         protected List<T> Queue { get; }
         public T this[int index] => Queue[index];

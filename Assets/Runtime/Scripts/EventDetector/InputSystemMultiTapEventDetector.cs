@@ -5,7 +5,7 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace SmartDebugger
 {
-    public sealed class InputSystemMultiTapEventDetector : IEventDetector
+    internal sealed class InputSystemMultiTapEventDetector : IEventDetector
     {
         private readonly TapEvent _tapEvent;
 
