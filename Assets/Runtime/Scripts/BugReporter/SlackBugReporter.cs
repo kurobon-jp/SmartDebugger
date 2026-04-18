@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -22,6 +23,7 @@ namespace SmartDebugger
 
         [SerializeField] private string _channelId;
         [SerializeField] private string _token;
+        [SerializeField] private bool _compress = true;
 
         public override string SendTo => "Send to Slack";
 
@@ -42,12 +44,18 @@ namespace SmartDebugger
                 if (!string.IsNullOrEmpty(report))
                 {
                     uploads.Add(
-                        new FileUpload($"{filePrefix}_report.txt", Encoding.UTF8.GetBytes(report), "text/plain"));
+                        new FileUpload(
+                            $"{filePrefix}_report.txt",
+                            Encoding.UTF8.GetBytes(report),
+                            "text/plain", _compress));
                 }
 
                 if (screenshot is { Length: > 0 })
                 {
-                    uploads.Add(new FileUpload($"{filePrefix}_screenshot.png", screenshot, "image/png"));
+                    uploads.Add(new FileUpload(
+                        $"{filePrefix}_screenshot.png",
+                        screenshot,
+                        "image/png", _compress));
                 }
 
                 if (uploads.Count > 0)
@@ -80,12 +88,12 @@ namespace SmartDebugger
             await CompleteUploadAsync(message, fileIds);
         }
 
-        private async Task<GetUploadURLExternalResult> GetUploadUrlAsync(string filename, byte[] data)
+        private async Task<GetUploadURLExternalResult> GetUploadURLAsync(string filename, int contentLength)
         {
             using var form = new MultipartFormDataContent();
             form.Add(new StringContent(_token), "token");
             form.Add(new StringContent(filename), "filename");
-            form.Add(new StringContent($"{data.Length}"), "length");
+            form.Add(new StringContent($"{contentLength}"), "length");
             var response = await Client.PostAsync(GetUploadURLExternal, form);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
@@ -95,9 +103,10 @@ namespace SmartDebugger
 
         private async Task<string> UploadAsync(FileUpload upload)
         {
-            var res = await GetUploadUrlAsync(upload.FileName, upload.Content);
+            var res = await GetUploadURLAsync(upload.FileName, upload.ContentLength);
             using var stream = new MemoryStream(upload.Content);
             using var content = new StreamContent(stream);
+            content.Headers.ContentEncoding.Add(upload.ContentEncoding);
             content.Headers.ContentType = new MediaTypeHeaderValue(upload.ContentType);
             var response = await Client.PostAsync(res.upload_url, content);
             response.EnsureSuccessStatusCode();
@@ -158,13 +167,28 @@ namespace SmartDebugger
         {
             public readonly string FileName;
             public readonly string ContentType;
+            public readonly string ContentEncoding;
             public readonly byte[] Content;
+            public readonly int ContentLength;
 
-            public FileUpload(string fileName, byte[] content, string contentType)
+            public FileUpload(string fileName, byte[] content, string contentType, bool compress)
             {
                 FileName = fileName;
                 ContentType = contentType;
-                Content = content;
+                Content = compress ? Compress(content) : content;
+                ContentEncoding =  compress ? "gzip" : "deflate";
+                ContentLength = content.Length;
+            }
+
+            private static byte[] Compress(byte[] data)
+            {
+                using var ms = new MemoryStream();
+                using (var gzip = new GZipStream(ms, CompressionMode.Compress, true))
+                {
+                    gzip.Write(data, 0, data.Length);
+                }
+
+                return ms.ToArray();
             }
         }
 
