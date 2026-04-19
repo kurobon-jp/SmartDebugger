@@ -62,6 +62,10 @@ namespace SmartDebugger
 
         public int Count => _groups.Count;
 
+        internal FieldGroups()
+        {
+        }
+
         public void AddGroup(string title, Action<FieldGroup> builder)
         {
             _groups.Add(new FieldGroup(title, true, builder));
