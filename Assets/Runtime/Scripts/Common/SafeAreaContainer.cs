@@ -39,6 +39,7 @@ namespace SmartDebugger
             anchorMax.x = Mathf.Clamp01(anchorMax.x / Screen.width);
             anchorMax.y = Mathf.Clamp01(anchorMax.y / Screen.height);
 
+            _content.sizeDelta = Vector2.zero;
             _content.anchorMin = anchorMin;
             _content.anchorMax = anchorMax;
             _content.offsetMin = Vector2.zero;
