@@ -173,5 +173,13 @@ namespace SmartDebugger
             _isRequestBottomScroll = false;
             _listScroll.Refresh(normalizedPosition);
         }
+
+        public void OnCopy()
+        {
+            var entry = _logReceiver.FindById(_selected);
+            var text = entry.Message + "\n";
+            text += string.Join("\n", entry.StackTrace);
+            GUIUtility.systemCopyBuffer = text;
+        }
     }
 }

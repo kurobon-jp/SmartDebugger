@@ -22,8 +22,8 @@ namespace SmartDebugger
 
         public Dictionary<int, LogEntry> Entries { get; } = new();
 
-        public event Action OnAdding;
-        public event Action OnAdded;
+        internal event Action OnAdding;
+        internal event Action OnAdded;
 
         internal LogReceiver()
         {
