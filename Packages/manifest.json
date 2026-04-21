@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.github.kurobon.simple_scroll": "1.0.1",
+    "com.github.kurobon.simple_scroll": "1.0.4",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.collab-proxy": "2.10.2",
     "com.unity.device-simulator.devices": "1.0.1",

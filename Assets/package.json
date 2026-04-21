@@ -1,7 +1,7 @@
 {
   "name": "com.github.kurobon.smart_debugger",
   "displayName": "SmartDebugger",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "unity": "2022.1",
   "description": "SmartDebugger",
   "author": {
@@ -25,6 +25,6 @@
     }
   ],
   "dependencies": {
-    "com.github.kurobon.simple_scroll": "1.0.3"
+    "com.github.kurobon.simple_scroll": "1.0.4"
   }
 }
