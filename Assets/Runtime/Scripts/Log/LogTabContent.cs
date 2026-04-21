@@ -24,8 +24,17 @@ namespace SmartDebugger
 
         private int _selected = -1;
         private float _normalizedPosition;
-        private bool _isRequestBottomScroll;
         private LogReceiver _logReceiver;
+
+        protected override void Start()
+        {
+            _listScroll.OnVisibleRangeChanged += OnVisibleRangeChanged;
+        }
+
+        private void OnVisibleRangeChanged(Range visibleRange)
+        {
+            _normalizedPosition = visibleRange.End >= GetDataCount() - 1 ? 1f : float.NaN;
+        }
 
         protected override void OnEnable()
         {
@@ -35,27 +44,19 @@ namespace SmartDebugger
             _errorToggle.SetIsOnWithoutNotify(!_logReceiver.IsErrorFilter);
             _filterText.SetTextWithoutNotify(_logReceiver.FilterText);
             _listScroll.SetDataSource(this);
-            _logReceiver.OnAdding += OnLogAdding;
             _logReceiver.OnAdded += OnLogAdded;
             UpdateFilter();
             UpdateCount();
-            _isRequestBottomScroll = true;
             ErrorIndicator.Clear();
         }
 
         protected override void OnDisable()
         {
-            _logReceiver.OnAdding -= OnLogAdding;
             _logReceiver.OnAdded -= OnLogAdded;
             ErrorIndicator.Clear();
         }
 
-        private void OnLogAdding()
-        {
-            _isRequestBottomScroll |= _listScroll.VisibleRange.End >= GetDataCount() - 1;
-        }
-
-        private void OnLogAdded()
+        private void OnLogAdded(LogEntry entry)
         {
             UpdateCount();
         }
@@ -88,22 +89,14 @@ namespace SmartDebugger
                 types |= LogTypes.Error;
             }
 
-            var normalizedPos = _listScroll.NormalizedPosition;
-            if (normalizedPos > 0)
-            {
-                _normalizedPosition = normalizedPos;
-            }
-
+            _normalizedPosition = 1f;
             _logReceiver.Filter(types, _filterText.text);
-            _listScroll.Refresh(_normalizedPosition);
         }
 
-        private void Update()
+        private void LateUpdate()
         {
-            if (!_isRequestBottomScroll) return;
-            _isRequestBottomScroll = false;
-            if (_listScroll.IsDragging) return;
-            _listScroll.Refresh(1f);
+            if (_listScroll.IsDragging || float.IsNaN(_normalizedPosition)) return;
+            _listScroll.Refresh(_normalizedPosition);
         }
 
         public void Clear()
@@ -112,7 +105,7 @@ namespace SmartDebugger
             UpdateCount();
             _description.SetActive(false);
             _selected = -1;
-            _listScroll.Refresh();
+            _normalizedPosition = 1f;
         }
 
         public void ClearFilterText()
@@ -170,8 +163,7 @@ namespace SmartDebugger
 
         public void ScrollTo(float normalizedPosition)
         {
-            _isRequestBottomScroll = false;
-            _listScroll.Refresh(normalizedPosition);
+            _normalizedPosition = normalizedPosition;
         }
 
         public void OnCopy()

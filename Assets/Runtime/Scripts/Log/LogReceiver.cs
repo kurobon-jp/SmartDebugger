@@ -22,8 +22,7 @@ namespace SmartDebugger
 
         public Dictionary<int, LogEntry> Entries { get; } = new();
 
-        internal event Action OnAdding;
-        internal event Action OnAdded;
+        internal event Action<LogEntry> OnAdded;
 
         internal LogReceiver()
         {
@@ -32,9 +31,9 @@ namespace SmartDebugger
 
         private void OnLogMessageReceived(string condition, string stackTrace, LogType type)
         {
-            OnAdding?.Invoke();
-            AddEntry(new LogEntry(_ids++, condition, stackTrace, type, Time.time));
-            OnAdded?.Invoke();
+            var entry = new LogEntry(_ids++, condition, stackTrace, type, Time.time);
+            AddEntry(entry);
+            OnAdded?.Invoke(entry);
         }
 
         public LogEntry FindById(int id)
