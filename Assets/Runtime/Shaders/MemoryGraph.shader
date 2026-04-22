@@ -6,7 +6,6 @@ Shader "UI/MemoryGraph"
         _LineWidth ("Line Width (UV)", Float) = 0.01
         _MonoLineColor ("Mono Line Color", Color) = (0.3, 0.9, 1)
         _TotalLineColor ("Total Line Color", Color) = (1, 0.6, 0.2)
-        _BackgroundColor ("Background Color", Color) = (0,0,0,0.2)
     }
 
     SubShader
@@ -30,7 +29,6 @@ Shader "UI/MemoryGraph"
 
             fixed4 _MonoLineColor;
             fixed4 _TotalLineColor;
-            fixed4 _BackgroundColor;
             float _LineWidth;
             int _SampleCount;
             float4 _Samples[256];
@@ -77,7 +75,6 @@ Shader "UI/MemoryGraph"
                 float aTotal = saturate(1 - distTotal / _LineWidth);
 
                 float alpha = max(aMono, aTotal);
-                if (alpha <= 0) return _BackgroundColor;
                 fixed3 col =
                     aMono > aTotal
                         ? _MonoLineColor

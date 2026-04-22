@@ -3,7 +3,6 @@ Shader "UI/FPSGraph"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _BackgroundColor ("Background Color", Color) = (0,0,0,0.15)
         _BarWidth ("Bar Width (UV)", Float) = 0.8
         _LineWidth ("Line Width (UV)", Float) = 0.01
     }
@@ -25,7 +24,6 @@ Shader "UI/FPSGraph"
             #pragma fragment frag
             #include "UnityCG.cginc"
 
-            fixed4 _BackgroundColor;
             float _BarWidth;
             float _LineWidth;
             int _SampleCount;
@@ -57,7 +55,7 @@ Shader "UI/FPSGraph"
                 int idx = (int)x;
                 float barH = _Samples[idx].x;
                 float warn = saturate(_Samples[idx].y);
-                fixed4 col = _BackgroundColor;
+                fixed4 col = fixed4(0, 0, 0, 0);
 
                 // ==== 棒グラフ ====
                 if (i.uv.y <= barH)
