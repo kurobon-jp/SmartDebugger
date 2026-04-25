@@ -104,39 +104,41 @@ namespace SmartDebugger
         {
             if (showLog)
             {
-                _canvas.Show<LogTabContent>();
+                _canvas.Open<LogTabContent>();
             }
             else
             {
-                _canvas.Show();
+                _canvas.Open();
             }
         }
 
         public void CloseMenu()
         {
-            _canvas.Hide();
+            _canvas.Close();
         }
 
-        public void ToggleMenu()
+        internal void HideMenu()
         {
-            _canvas.gameObject.SetActive(!IsShownMenu);
+            _canvas.SetAlpha(0f);
         }
 
         private void LateUpdate()
         {
-            foreach (var detector in _openEventDetectors)
+            if (!IsShownMenu)
             {
-                if (detector.IsTriggered())
+                foreach (var detector in _openEventDetectors)
                 {
+                    if (!detector.IsTriggered()) continue;
                     OpenMenu(ErrorIndicator.HasError);
                     break;
                 }
             }
-
-            foreach (var detector in _closeEventDetectors)
+            else
             {
-                if (detector.IsTriggered())
+
+                foreach (var detector in _closeEventDetectors)
                 {
+                    if (!detector.IsTriggered()) continue;
                     CloseMenu();
                     break;
                 }
