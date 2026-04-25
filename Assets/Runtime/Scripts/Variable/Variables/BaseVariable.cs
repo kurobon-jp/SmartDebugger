@@ -105,6 +105,11 @@ namespace SmartDebugger
             }
         }
 
+        public static implicit operator T(SerializeVariable<T> variable)
+        {
+            return variable.Value;
+        }
+
         private protected abstract void SetSerializeValue(T value);
         private protected abstract T GetSerializeValue(T defaultValue);
     }
