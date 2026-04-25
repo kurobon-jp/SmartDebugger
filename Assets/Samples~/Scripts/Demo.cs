@@ -1,32 +1,31 @@
-using System;
 using System.Collections.Generic;
 using SmartDebugger;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Demo : MonoBehaviour
 {
+    private ShapeFields _shapeFields = new ShapeFields();
+    private CameraFields _cameraFields = new CameraFields();
+    private SupportedTypeFields _supportedTypeFields = new SupportedTypeFields();
+
+    [SerializeField] private TextMesh _textMesh;
+    
     void Start()
     {
         Application.targetFrameRate = 60;
-        SmartDebug.Instance.AddFieldLayout(new ShapeFields());
-        SmartDebug.Instance.AddFieldLayout(new CameraFields());
-        SmartDebug.Instance.AddFieldLayout(new SupportedTypeFields());
+        SmartDebug.Instance.AddFieldLayout(_shapeFields);
+        SmartDebug.Instance.AddFieldLayout(_cameraFields);
+        SmartDebug.Instance.AddFieldLayout(_supportedTypeFields);
+        
+        _textMesh.text = $"Press {SDSettings.Instance.OpenShortcut}";
     }
 
     private void Update()
     {
-        var frameCount = Time.frameCount;
-        if (frameCount % 400 == 0)
+        if (Time.frameCount % 100 == 0)
         {
-            Debug.LogError($"Error log {frameCount}");
-        }
-        else if (frameCount % 300 == 0)
-        {
-            Debug.LogWarning($"Warning log {frameCount}");
-        }
-        else if (frameCount % 200 == 0)
-        {
-            Debug.Log($"Info log {frameCount}");
+            _shapeFields.Spawn();
         }
     }
 
@@ -110,7 +109,7 @@ public class Demo : MonoBehaviour
     {
         public string Title => "Shape";
 
-        private readonly EnumVariable<ShapeType> _shapeType = new("Shape Type");
+        private readonly EnumVariable<ShapeType> _shapeType = new("Shape Type", ShapeType.Cube);
 
         private readonly List<GameObject> _shapes = new();
 
@@ -128,10 +127,10 @@ public class Demo : MonoBehaviour
             });
         }
 
-        private void Spawn()
+        public void Spawn()
         {
             var prefab = Resources.Load<GameObject>($"Prefabs/{_shapeType.EnumValue}");
-            var go = Instantiate(prefab);
+            var go = Instantiate(prefab, Random.insideUnitSphere + Vector3.up * 10, Random.rotation);
             _shapes.Add(go);
             Debug.Log("Spawned " + _shapeType.EnumValue);
         }

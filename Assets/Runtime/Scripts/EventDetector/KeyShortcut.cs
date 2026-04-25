@@ -10,6 +10,14 @@ namespace SmartDebugger
         public ModifierKeys Modifiers;
 
         public bool IsEnable => KeyCode != KeyCode.None;
+#if UNITY_EDITOR
+        public override string ToString()
+        {
+            return Modifiers == ModifierKeys.None
+                ? KeyCode.ToString()
+                : $"{Modifiers.ToString().Replace(", ", "+")}+{KeyCode}";
+        }
+#endif
     }
 
     [Flags]
