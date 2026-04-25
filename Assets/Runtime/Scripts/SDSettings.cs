@@ -72,6 +72,10 @@ namespace SmartDebugger
         private void OnEnable()
         {
             _instance = this;
+#if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
+#endif
+            BugReporter?.Initialize();
         }
 
         public T LoadPrefab<T>(string prefabName) where T : Object

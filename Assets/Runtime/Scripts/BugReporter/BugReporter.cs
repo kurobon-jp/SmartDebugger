@@ -5,9 +5,22 @@ namespace SmartDebugger
 {
     public abstract class BugReporter : ScriptableObject
     {
+        public BoolVariable IncludeLogs { get; } =
+            new("IncludeLogs", true, serializeKey: "sd.include_logs");
+
+        public BoolVariable IncludeScreenCapture { get; } =
+            new("IncludeScreenCapture", true, serializeKey: "sd.include_screen_capture");
+
+        public BoolVariable IncludeScreenRecord { get; } =
+            new("IncludeScreenRecord", serializeKey: "sd.include_screen_record");
+        
         public abstract string SendTo { get; }
 
-        public abstract void SendReport(string description, string report, byte[] screenshot,
+        internal virtual void Initialize()
+        {
+        }
+
+        public abstract void SendReport(string description, string report, byte[] screenshot, string videoPath,
             Action<ReportResult> onResult);
 
         protected static string CreateFilePrefix()

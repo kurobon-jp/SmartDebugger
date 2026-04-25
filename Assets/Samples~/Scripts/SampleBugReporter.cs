@@ -5,11 +5,11 @@ using SmartDebugger;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SampleBugReporter", menuName = "SmartDebugger/BugReporter/SampleBugReporter")]
-public class SampleBugReporter : BugReporter
+public class SampleBugReporter : ScreenRecordBugReporter
 {
     public override string SendTo => "Save report";
 
-    public override void SendReport(string description, string report, byte[] screenshot, Action<ReportResult> onResult)
+    public override void SendReport(string _, string report, byte[] screenshot, string videoPath, Action<ReportResult> onResult)
     {
         var prefix = CreateFilePrefix();
         var reportUrls = new List<string>();
@@ -25,6 +25,11 @@ public class SampleBugReporter : BugReporter
         {
             File.WriteAllBytes(screenshotPath, screenshot);
             reportUrls.Add("file:///" + Uri.EscapeUriString(screenshotPath));
+        }
+
+        if (File.Exists(videoPath))
+        {
+            reportUrls.Add("file:///" + Uri.EscapeUriString(videoPath));
         }
 
         onResult(ReportResult.Success(reportUrls.ToArray()));

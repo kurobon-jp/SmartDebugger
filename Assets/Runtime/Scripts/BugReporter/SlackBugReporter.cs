@@ -12,7 +12,7 @@ using UnityEngine;
 namespace SmartDebugger
 {
     [CreateAssetMenu(fileName = "SlackBugReporter", menuName = "SmartDebugger/BugReporter/SlackBugReporter")]
-    public class SlackBugReporter : BugReporter
+    public class SlackBugReporter : ScreenRecordBugReporter
     {
         private const string SlackApi = "https://slack.com/api";
         private static readonly string GetUploadURLExternal = $"{SlackApi}/files.getUploadURLExternal";
@@ -23,11 +23,10 @@ namespace SmartDebugger
 
         [SerializeField] private string _channelId;
         [SerializeField] private string _token;
-        [SerializeField] private bool _compress = true;
 
         public override string SendTo => "Send to Slack";
 
-        private async void SendReportAsync(string description, string report, byte[] screenshot,
+        private async void SendReportAsync(string description, string report, byte[] screenshot, string videoPath,
             Action<ReportResult> onResult)
         {
             if (string.IsNullOrEmpty(_token) || string.IsNullOrEmpty(_channelId))
@@ -47,7 +46,7 @@ namespace SmartDebugger
                         new FileUpload(
                             $"{filePrefix}_report.txt",
                             Encoding.UTF8.GetBytes(report),
-                            "text/plain", _compress));
+                            "text/plain"));
                 }
 
                 if (screenshot is { Length: > 0 })
@@ -55,7 +54,16 @@ namespace SmartDebugger
                     uploads.Add(new FileUpload(
                         $"{filePrefix}_screenshot.png",
                         screenshot,
-                        "image/png", _compress));
+                        "image/png"));
+                }
+
+                if (!string.IsNullOrEmpty(videoPath) && File.Exists(videoPath))
+                {
+                    var bytes = File.ReadAllBytes(videoPath);
+                    uploads.Add(new FileUpload(
+                        $"{filePrefix}_screen_record.mp4",
+                        bytes,
+                        "video/mp4"));
                 }
 
                 if (uploads.Count > 0)
@@ -156,11 +164,10 @@ namespace SmartDebugger
             }
         }
 
-
-        public override void SendReport(string description, string report, byte[] screenshot,
+        public override void SendReport(string description, string report, byte[] screenshot, string videoPath,
             Action<ReportResult> onResult)
         {
-            SendReportAsync(description, report, screenshot, onResult);
+            SendReportAsync(description, report, screenshot, videoPath, onResult);
         }
 
         private class FileUpload
@@ -171,12 +178,12 @@ namespace SmartDebugger
             public readonly byte[] Content;
             public readonly int ContentLength;
 
-            public FileUpload(string fileName, byte[] content, string contentType, bool compress)
+            public FileUpload(string fileName, byte[] content, string contentType)
             {
                 FileName = fileName;
                 ContentType = contentType;
-                Content = compress ? Compress(content) : content;
-                ContentEncoding =  compress ? "gzip" : "deflate";
+                Content = Compress(content);
+                ContentEncoding = "gzip";
                 ContentLength = content.Length;
             }
 

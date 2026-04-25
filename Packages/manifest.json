@@ -8,6 +8,8 @@
     "com.unity.inputsystem": "1.13.1",
     "com.unity.test-framework": "1.4.6",
     "com.unity.ugui": "3.0.0",
+    "jp.co.cyberagent.instant-replay": "file:C:/Users/kurob/Desktop/Unity/ScreenRecord/Packages/InstantReplay/Packages/jp.co.cyberagent.instant-replay",
+    "jp.co.cyberagent.instant-replay.dependencies": "https://github.com/CyberAgentGameEntertainment/InstantReplay.git?path=/Packages/jp.co.cyberagent.instant-replay.dependencies",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
@@ -43,12 +45,12 @@
   },
   "scopedRegistries": [
     {
-      "name": "OpenUPM",
+      "name": "package.openupm.com",
       "url": "https://package.openupm.com",
       "scopes": [
+        "org.nuget",
         "com.github.kurobon.simple_scroll"
-      ],
-      "overrideBuiltIns": false
+      ]
     }
   ]
 }

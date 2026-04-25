@@ -5,10 +5,11 @@ using UnityEngine.UI;
 namespace SmartDebugger
 {
     [RequireComponent(typeof(Canvas), typeof(CanvasScaler), typeof(RectTransform))]
-    public class SDCanvas : BaseView
+    internal class SDCanvas : BaseView
     {
         [SerializeField] private Canvas _canvas;
         [SerializeField] private CanvasScaler _canvasScaler;
+        [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private RectTransform _rectTransform;
         [SerializeField] private MainTab _mainTab;
         [SerializeField] private Transform _contentParent;
@@ -39,14 +40,15 @@ namespace SmartDebugger
             _mainTab.gameObject.SetActive(false);
         }
 
-        public void Show()
+        internal void Open()
         {
+            SetAlpha(1f);
             gameObject.SetActive(true);
         }
 
-        public void Show<T>()
+        internal void Open<T>()
         {
-            Show();
+            Open();
             var tabContents = SDSettings.Instance.MainTabContents;
             for (var i = 0; i < tabContents.Length; i++)
             {
@@ -56,17 +58,22 @@ namespace SmartDebugger
             }
         }
 
-        public void Hide()
+        internal void Close()
         {
             gameObject.SetActive(false);
         }
 
-        public void ZoomIn()
+        internal void SetAlpha(float alpha)
+        {
+            _canvasGroup.alpha = alpha;
+        }
+
+        internal void ZoomIn()
         {
             AddScale(0.1f);
         }
 
-        public void ZoomOut()
+        internal void ZoomOut()
         {
             AddScale(-0.1f);
         }
