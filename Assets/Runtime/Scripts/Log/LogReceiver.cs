@@ -31,7 +31,7 @@ namespace SmartDebugger
 
         private void OnLogMessageReceived(string condition, string stackTrace, LogType type)
         {
-            var entry = new LogEntry(_ids++, condition, stackTrace, type, Time.time);
+            var entry = new LogEntry(_ids++, condition, stackTrace, type);
             AddEntry(entry);
             OnAdded?.Invoke(entry);
         }

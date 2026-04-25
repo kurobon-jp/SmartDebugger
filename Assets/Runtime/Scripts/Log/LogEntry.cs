@@ -1,3 +1,5 @@
+using System;
+
 namespace SmartDebugger
 {
     public readonly struct LogEntry
@@ -6,14 +8,14 @@ namespace SmartDebugger
         public readonly string Message;
         public readonly string[] StackTrace;
         public readonly LogTypes Types;
-        public readonly float Time;
+        public readonly DateTimeOffset Time;
 
-        public LogEntry(int id, string message, string stackTrace, UnityEngine.LogType type, float time)
+        public LogEntry(int id, string message, string stackTrace, UnityEngine.LogType type)
         {
             Id = id;
             Message = message;
             StackTrace = stackTrace.Split('\n');
-            Time = time;
+            Time = DateTimeOffset.Now;
             Types = type switch
             {
                 UnityEngine.LogType.Log => LogTypes.Info,
