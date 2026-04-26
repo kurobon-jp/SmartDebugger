@@ -59,8 +59,8 @@ namespace SmartDebugger
 
         public void OnClear()
         {
-            _input.text = string.Empty;
-            _clear.gameObject.SetActive(false);
+            if (_variable == null) return;
+            _variable.Value = null;
         }
     }
 }
