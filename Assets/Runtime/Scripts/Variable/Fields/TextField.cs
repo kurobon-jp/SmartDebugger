@@ -7,7 +7,8 @@ namespace SmartDebugger
     {
         [SerializeField] private Text _title;
         [SerializeField] private InputField _input;
-
+        [SerializeField] private Button _clear;
+        
         private TextVariable _variable;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -17,6 +18,8 @@ namespace SmartDebugger
             _title.text = variable.Title;
             _input.text = variable.TextValue;
             _input.interactable = variable.Interactable;
+            _clear.gameObject.SetActive(!string.IsNullOrEmpty(variable.TextValue));
+            _clear.interactable = variable.Interactable;
             variable.OnValueChanged -= OnValueChanged;
             variable.OnValueChanged += OnValueChanged;
             variable.OnInteractabilityChanged -= OnInteractabilityChanged;
@@ -39,7 +42,8 @@ namespace SmartDebugger
         private void OnValueChanged(SerializeVariable<string> variable)
         {
             if (!isActiveAndEnabled) return;
-            _input.text = variable.TextValue;
+            _input.text = variable;
+            _clear.gameObject.SetActive(!string.IsNullOrEmpty(variable.TextValue));
         }
 
         private void OnInteractabilityChanged(bool interactable)
@@ -51,6 +55,12 @@ namespace SmartDebugger
         {
             _variable.Value = _input.text;
             _input.SetTextWithoutNotify(_variable.TextValue);
+        }
+
+        public void OnClear()
+        {
+            _input.text = string.Empty;
+            _clear.gameObject.SetActive(false);
         }
     }
 }
