@@ -62,7 +62,7 @@ namespace SmartDebugger
                 }
                 
                 // 一度メモリに書き出す
-                var ms = new MemoryStream();
+                using var ms = new MemoryStream();
                 await form.CopyToAsync(ms);
                 ms.Position = 0;
 
