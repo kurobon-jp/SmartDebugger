@@ -14,6 +14,8 @@ namespace SmartDebugger
         [SerializeField] private MainTab _mainTab;
         [SerializeField] private Transform _contentParent;
 
+        private float _timeScale;
+
         private readonly List<MainTab> _mainTabs = new();
 
         private FloatVariable ScaleFactor { get; } = new("ScaleFactor", 1f, 0.5f, 1.5f, "sd.scale_factor");
@@ -38,6 +40,19 @@ namespace SmartDebugger
             }
 
             _mainTab.gameObject.SetActive(false);
+        }
+
+        protected override void OnEnable()
+        {
+            if (!SDSettings.Instance.IsPauseOnDebugMenu) return;
+            _timeScale = Time.timeScale;
+            Time.timeScale = 0;
+        }
+
+        protected override void OnDisable()
+        {
+            if (!SDSettings.Instance.IsPauseOnDebugMenu) return;
+            Time.timeScale = _timeScale;
         }
 
         internal void Open()
