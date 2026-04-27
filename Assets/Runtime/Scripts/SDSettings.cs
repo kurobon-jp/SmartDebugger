@@ -78,5 +78,12 @@ namespace SmartDebugger
 
             throw new FileNotFoundException($"Prefab of type {typeof(T)} not found in SDSettings.");
         }
+
+#if !UNITY_EDITOR
+        private void OnEnable()
+        {
+            _instance = this;
+        }
+#endif
     }
 }
