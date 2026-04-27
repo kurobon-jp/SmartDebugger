@@ -2,8 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Object = UnityEngine.Object;
 
 namespace SmartDebugger
 {
@@ -70,23 +68,7 @@ namespace SmartDebugger
         public int CanvasSortingOrder => _canvasSortingOrder;
         public BugReporter BugReporter => _bugReporter;
 
-        private void OnEnable()
-        {
-            _instance = this;
-#if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
-#endif
-            SceneManager.sceneLoaded += OnSceneLoaded;
-        }
-
-        private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            if (!IsAutoInitialize) return;
-            SmartDebug.Initialize();
-        }
-
-        public T LoadPrefab<T>(string prefabName) where T : Object
+        public T LoadPrefab<T>(string prefabName) where T : UnityEngine.Object
         {
             foreach (var prefab in _prefabs)
             {

@@ -29,11 +29,15 @@ namespace SmartDebugger
 
         public bool IsShownMenu => _canvas.gameObject.activeSelf;
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void OnSceneLoaded()
+        {
+            if (!SDSettings.Instance.IsAutoInitialize) return;
+            Initialize();
+        }
+        
         public static void Initialize()
         {
-#if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
-#endif
             if (_instance != null) return;
             var prefab = SDSettings.Instance.LoadPrefab<SmartDebug>("SmartDebug");
             _instance = Instantiate(prefab);
