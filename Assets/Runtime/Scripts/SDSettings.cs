@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace SmartDebugger
@@ -75,7 +76,14 @@ namespace SmartDebugger
 #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
 #endif
-            BugReporter?.Initialize();
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            if (!IsAutoInitialize) return;
+            SmartDebug.Initialize();
         }
 
         public T LoadPrefab<T>(string prefabName) where T : Object

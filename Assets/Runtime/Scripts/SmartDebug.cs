@@ -9,7 +9,7 @@ namespace SmartDebugger
         private static SmartDebug _instance;
 
         [SerializeField] private SDCanvas _canvas;
-        private float _timeScale;
+
         private readonly List<IEventDetector> _openEventDetectors = new();
         private readonly List<IEventDetector> _closeEventDetectors = new();
         private readonly List<IFieldLayout> _fieldLayouts = new();
@@ -29,17 +29,11 @@ namespace SmartDebugger
 
         public bool IsShownMenu => _canvas.gameObject.activeSelf;
 
-        [RuntimeInitializeOnLoadMethod]
-        private static void InitializeOnLoad()
-        {
-            if (SDSettings.Instance.IsAutoInitialize)
-            {
-                Initialize();
-            }
-        }
-
         public static void Initialize()
         {
+#if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
+#endif
             if (_instance != null) return;
             var prefab = SDSettings.Instance.LoadPrefab<SmartDebug>("SmartDebug");
             _instance = Instantiate(prefab);
@@ -47,6 +41,8 @@ namespace SmartDebugger
             {
                 DontDestroyOnLoad(_instance.gameObject);
             }
+
+            SDSettings.Instance.BugReporter?.Initialize();
         }
 
         private void Awake()
@@ -80,24 +76,6 @@ namespace SmartDebugger
             {
                 _openEventDetectors.Add(EventDetectorFactory.CreateMultiTapEventDetector(openTapEvent));
             }
-        }
-
-        private void OnEnable()
-        {
-            if (!SDSettings.Instance.IsPauseOnDebugMenu) return;
-            _timeScale = Time.timeScale;
-            Time.timeScale = 0;
-        }
-
-        private void OnDisable()
-        {
-            if (!SDSettings.Instance.IsPauseOnDebugMenu) return;
-            Time.timeScale = _timeScale;
-        }
-
-        private void OnDestroy()
-        {
-            _instance = null;
         }
 
         public void OpenMenu(bool showLog = false)
@@ -135,7 +113,6 @@ namespace SmartDebugger
             }
             else
             {
-
                 foreach (var detector in _closeEventDetectors)
                 {
                     if (!detector.IsTriggered()) continue;

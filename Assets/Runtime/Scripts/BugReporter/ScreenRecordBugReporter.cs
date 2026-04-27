@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace SmartDebugger
 {
@@ -14,21 +13,15 @@ namespace SmartDebugger
         internal override void Initialize()
         {
             IncludeScreenRecord.OnValueChanged += OnIncludeScreenRecordChanged;
-            if (!IncludeScreenRecord) return;
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            if (IncludeScreenRecord)
+            {
+                StartRecording();
+            }
         }
 
         private void OnDisable()
         {
             IncludeScreenRecord.OnValueChanged -= OnIncludeScreenRecordChanged;
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            StopRecording();
-        }
-
-        private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            StartRecording();
         }
 
         private void OnIncludeScreenRecordChanged(SerializeVariable<bool> variable)
