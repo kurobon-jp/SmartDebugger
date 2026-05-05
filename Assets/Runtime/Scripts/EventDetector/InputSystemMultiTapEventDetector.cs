@@ -37,7 +37,7 @@ namespace SmartDebugger
             if (!allEnded)
                 return false;
 
-            var now = Time.time;
+            var now = Time.unscaledTime;
 
             if (now - _lastTapTime > _tapEvent.Interval)
                 _currentTapCount = 0;
