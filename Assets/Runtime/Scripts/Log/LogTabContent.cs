@@ -16,6 +16,8 @@ namespace SmartDebugger
         [SerializeField] private InputField _filterText;
 
         [SerializeField] private FixedListScroll _listScroll;
+        [SerializeField] private Scrollbar _scrollbar;
+        [SerializeField] private GameObject _scrollButtons;
         [SerializeField] private LogListItem _listItem;
 
         [SerializeField] private GameObject _description;
@@ -34,6 +36,7 @@ namespace SmartDebugger
         private void OnVisibleRangeChanged(Range visibleRange)
         {
             _normalizedPosition = visibleRange.End >= GetDataCount() - 1 ? 1f : float.NaN;
+            _scrollButtons.SetActive(_scrollbar.gameObject.activeSelf);
         }
 
         protected override void OnEnable()
@@ -91,12 +94,13 @@ namespace SmartDebugger
 
             _normalizedPosition = 1f;
             _logReceiver.Filter(types, _filterText.text);
+            _listScroll.Refresh();
         }
 
         private void LateUpdate()
         {
             if (_listScroll.IsDragging || float.IsNaN(_normalizedPosition)) return;
-            _listScroll.Refresh(_normalizedPosition);
+            _listScroll.Refresh(_normalizedPosition, false);
         }
 
         public void Clear()
@@ -106,6 +110,7 @@ namespace SmartDebugger
             _description.SetActive(false);
             _selected = -1;
             _normalizedPosition = 1f;
+            _listScroll.Refresh();
         }
 
         public void ClearFilterText()
@@ -164,6 +169,7 @@ namespace SmartDebugger
         public void ScrollTo(float normalizedPosition)
         {
             _normalizedPosition = normalizedPosition;
+            _listScroll.Refresh();
         }
 
         public void OnCopy()
