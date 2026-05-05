@@ -31,10 +31,10 @@ namespace SmartDebugger
             }
         }
 
-        public void OnToggleChanged(bool inOn)
+        public void OnToggleChanged(bool isOn)
         {
-            _fieldParent.gameObject.SetActive(inOn);
-            _icon.transform.localEulerAngles = Vector3.forward * (inOn ? 0 : 90);
+            _fieldParent.gameObject.SetActive(isOn);
+            _icon.transform.localEulerAngles = Vector3.forward * (isOn ? 0 : 90);
         }
     }
 }
