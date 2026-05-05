@@ -1,6 +1,7 @@
 using SimpleScroll;
 using UnityEngine;
 using UnityEngine.UI;
+using Range = SimpleScroll.Range;
 
 namespace SmartDebugger
 {
@@ -35,8 +36,8 @@ namespace SmartDebugger
 
         private void OnVisibleRangeChanged(Range visibleRange)
         {
-            _normalizedPosition = visibleRange.End >= GetDataCount() - 1 ? 1f : float.NaN;
             _scrollButtons.SetActive(_scrollbar.gameObject.activeSelf);
+            _normalizedPosition = visibleRange.End >= GetDataCount() - 1 ? 1f : float.NaN;
         }
 
         protected override void OnEnable()
@@ -169,7 +170,6 @@ namespace SmartDebugger
         public void ScrollTo(float normalizedPosition)
         {
             _normalizedPosition = normalizedPosition;
-            _listScroll.Refresh();
         }
 
         public void OnCopy()
