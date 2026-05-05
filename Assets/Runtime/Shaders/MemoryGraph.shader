@@ -1,4 +1,4 @@
-Shader "UI/MemoryGraph"
+Shader "SmartDebug/MemoryGraph"
 {
     Properties
     {
@@ -30,8 +30,9 @@ Shader "UI/MemoryGraph"
             fixed4 _MonoLineColor;
             fixed4 _TotalLineColor;
             float _LineWidth;
-            int _SampleCount;
-            float4 _Samples[256];
+            uniform float4 _Samples[256];
+            uniform int _SampleCount;
+            uniform int _SampleOffset; // 書き込み位置
 
             struct appdata
             {
@@ -56,7 +57,7 @@ Shader "UI/MemoryGraph"
             fixed4 frag(v2f i) : SV_Target
             {
                 float x = i.uv.x * (_SampleCount - 1);
-                int idx = (int)x;
+                int idx = (_SampleOffset + 1 + (int)x) % _SampleCount;
                 int idx1 = min(idx + 1, _SampleCount - 1);
 
                 float t = frac(x);

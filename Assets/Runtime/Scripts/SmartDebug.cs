@@ -15,6 +15,7 @@ namespace SmartDebugger
         private readonly List<IFieldLayout> _fieldLayouts = new();
 
         public LogReceiver LogReceiver { get; private set; }
+        internal FrameRecorder FrameRecorder  { get; private set; }
 
         internal IReadOnlyList<IFieldLayout> FieldLayouts => _fieldLayouts;
 
@@ -52,6 +53,7 @@ namespace SmartDebugger
         private void Awake()
         {
             LogReceiver = new LogReceiver();
+            FrameRecorder = new FrameRecorder();
             if (SDSettings.Instance.IsAutoGenerateEventSystem && EventSystem.current == null)
             {
                 var go = new GameObject("EventSystem");
@@ -82,6 +84,12 @@ namespace SmartDebugger
             }
         }
 
+        private void OnDestroy()
+        {
+            FrameRecorder?.Dispose();
+            FrameRecorder = null;
+        }
+
         public void OpenMenu(bool showLog = false)
         {
             if (showLog)
@@ -106,6 +114,7 @@ namespace SmartDebugger
 
         private void LateUpdate()
         {
+            FrameRecorder?.Sample();
             if (!IsShownMenu)
             {
                 foreach (var detector in _openEventDetectors)

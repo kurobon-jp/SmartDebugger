@@ -30,7 +30,7 @@ MonoBehaviour:
   _mainTabContents:
   - {fileID: 2943127833382857417, guid: a33947c0780454d49ab73077a21d2e35, type: 3}
   - {fileID: 1815473358258955133, guid: 38d0c6f37a4dd44ce86893b2e0014830, type: 3}
-  - {fileID: 8180631821751222019, guid: 36528e095bcfe4d7c82d352edaaf20b5, type: 3}
+  - {fileID: 4435181233119290267, guid: 36528e095bcfe4d7c82d352edaaf20b5, type: 3}
   - {fileID: 4444016484104729482, guid: 0851510d8770a4d2c89ebed0c2858175, type: 3}
   - {fileID: 4222430269903736228, guid: dee743f055f6a462f98e257ea00786e7, type: 3}
   _prefabs:
