@@ -79,7 +79,22 @@ namespace SmartDebugger
             throw new FileNotFoundException($"Prefab of type {typeof(T)} not found in SDSettings.");
         }
 
-#if !UNITY_EDITOR
+#if UNITY_EDITOR
+        private void Reset()
+        {
+            var guids = UnityEditor.AssetDatabase.FindAssets("t:SDSettings");
+            foreach (var guid in guids)
+            {
+                var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+                if (!path.EndsWith("Runtime/Settings/SDSettings.asset")) continue;
+                var sdSettings = UnityEditor.AssetDatabase.LoadAssetAtPath<SDSettings>(path);
+                UnityEditor.EditorUtility.CopySerialized(sdSettings, this);
+                UnityEditor.EditorUtility.SetDirty(this);
+                UnityEditor.AssetDatabase.Refresh();
+                break;
+            }
+        }
+#else
         private void OnEnable()
         {
             _instance = this;
