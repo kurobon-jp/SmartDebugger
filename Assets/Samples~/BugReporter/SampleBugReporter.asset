@@ -12,3 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c53dcfdc4a70e414fb9df23e40e6673d, type: 3}
   m_Name: SampleBugReporter
   m_EditorClassIdentifier: 
+  _screenRecordOptions:
+    _width: 1280
+    _height: 720
+    _fps: 60
+    _videoBitrate: 2500000
+    _maxNumberOfRawFrameBuffers: 30
+    _fixedFrameRate: 0
+    _videoInputQueueSize: 5
+    _sampleRate: 44100
+    _channels: 2
+    _audioBitrate: 128000
+    _audioInputQueueSizeSeconds: 1
+    _maxMemoryUsageBytesForCompressedFrames: 20971520
