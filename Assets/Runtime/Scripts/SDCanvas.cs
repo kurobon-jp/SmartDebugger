@@ -46,6 +46,11 @@ namespace SmartDebugger
         {
             if (!SDSettings.Instance.IsPauseOnDebugMenu) return;
             _timeScale = Time.timeScale;
+            if (_timeScale <= 0)
+            {
+                _timeScale = 1f;
+            }
+
             Time.timeScale = 0;
         }
 
