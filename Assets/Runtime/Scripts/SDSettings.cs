@@ -29,7 +29,6 @@ namespace SmartDebugger
 
         [SerializeField] private bool _autoInitialize = true;
         [SerializeField] private bool _dontDestroyOnLoad = true;
-        [SerializeField] private bool _pauseOnDebugMenu;
         [SerializeField] private bool _autoGenerateEventSystem = true;
         [SerializeField] private bool _showErrorIndicator = true;
 
@@ -58,7 +57,6 @@ namespace SmartDebugger
 
         public bool IsAutoInitialize => _autoInitialize;
         public bool IsDontDestroyOnLoad => _dontDestroyOnLoad;
-        public bool IsPauseOnDebugMenu => _pauseOnDebugMenu;
         public bool IsAutoGenerateEventSystem => _autoGenerateEventSystem;
         public bool IsShowErrorIndicator => _showErrorIndicator;
         public KeyShortcut OpenShortcut => _openShortcut;

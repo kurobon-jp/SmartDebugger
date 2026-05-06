@@ -104,10 +104,10 @@ namespace SmartDebugger
 
         private static IEnumerator TakeScreenShotCoroutine(TaskCompletionSource<byte[]> tcs)
         {
-            SmartDebug.Instance.HideMenu();
+            SmartDebug.Instance.HideCanvas();
             yield return new WaitForEndOfFrame();
             var tex = ScreenCapture.CaptureScreenshotAsTexture();
-            SmartDebug.Instance.OpenMenu();
+            SmartDebug.Instance.OpenCanvas();
             var screenShot = tex.EncodeToPNG();
             Destroy(tex);
             tcs.SetResult(screenShot);

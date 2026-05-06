@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,7 +16,7 @@ namespace SmartDebugger
         private readonly List<IFieldLayout> _fieldLayouts = new();
 
         public LogReceiver LogReceiver { get; private set; }
-        internal FrameRecorder FrameRecorder  { get; private set; }
+        internal FrameRecorder FrameRecorder { get; private set; }
 
         internal IReadOnlyList<IFieldLayout> FieldLayouts => _fieldLayouts;
 
@@ -28,7 +29,9 @@ namespace SmartDebugger
             }
         }
 
-        public bool IsShownMenu => _canvas.gameObject.activeSelf;
+        public bool IsCanvasVisible => _canvas.gameObject.activeSelf;
+
+        public event Action<bool> OnCanvasVisibleChanged;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void OnSceneLoaded()
@@ -36,7 +39,7 @@ namespace SmartDebugger
             if (!SDSettings.Instance.IsAutoInitialize) return;
             Initialize();
         }
-        
+
         public static void Initialize()
         {
             if (_instance != null) return;
@@ -90,8 +93,9 @@ namespace SmartDebugger
             FrameRecorder = null;
         }
 
-        public void OpenMenu(bool showLog = false)
+        public void OpenCanvas(bool showLog = false)
         {
+            if (IsCanvasVisible) return;
             if (showLog)
             {
                 _canvas.Open<LogTabContent>();
@@ -100,14 +104,18 @@ namespace SmartDebugger
             {
                 _canvas.Open();
             }
+
+            OnCanvasVisibleChanged?.Invoke(true);
         }
 
-        public void CloseMenu()
+        public void CloseCanvas()
         {
+            if (!IsCanvasVisible) return;
             _canvas.Close();
+            OnCanvasVisibleChanged?.Invoke(false);
         }
 
-        internal void HideMenu()
+        internal void HideCanvas()
         {
             _canvas.SetAlpha(0f);
         }
@@ -115,12 +123,12 @@ namespace SmartDebugger
         private void LateUpdate()
         {
             FrameRecorder?.Sample();
-            if (!IsShownMenu)
+            if (!IsCanvasVisible)
             {
                 foreach (var detector in _openEventDetectors)
                 {
                     if (!detector.IsTriggered()) continue;
-                    OpenMenu(ErrorIndicator.HasError);
+                    OpenCanvas(ErrorIndicator.HasError);
                     break;
                 }
             }
@@ -129,7 +137,7 @@ namespace SmartDebugger
                 foreach (var detector in _closeEventDetectors)
                 {
                     if (!detector.IsTriggered()) continue;
-                    CloseMenu();
+                    CloseCanvas();
                     break;
                 }
             }

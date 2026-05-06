@@ -213,7 +213,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8354001758351608264, guid: 6e21e1c4871344ccfba9c181c68800a9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: CloseMenu
+      value: CloseCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 8354001758351608264, guid: 6e21e1c4871344ccfba9c181c68800a9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

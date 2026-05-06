@@ -14,15 +14,12 @@ namespace SmartDebugger
         [SerializeField] private MainTab _mainTab;
         [SerializeField] private Transform _contentParent;
 
-        private float _timeScale;
-
         private readonly List<MainTab> _mainTabs = new();
-
-        private FloatVariable ScaleFactor { get; } = new("ScaleFactor", 1f, 0.5f, 1.5f, "sd.scale_factor");
+        private readonly FloatVariable _scaleFactor = new("ScaleFactor", 1f, 0.5f, 1.5f, "sd.scale_factor");
 
         protected override void Awake()
         {
-            _canvasScaler.scaleFactor = ScaleFactor.Value;
+            _canvasScaler.scaleFactor = _scaleFactor.Value;
             _canvas.sortingOrder = SDSettings.Instance.CanvasSortingOrder;
             var mainTabContents = SDSettings.Instance.MainTabContents;
             for (var i = 0; i < mainTabContents.Length; i++)
@@ -40,24 +37,6 @@ namespace SmartDebugger
             }
 
             _mainTab.gameObject.SetActive(false);
-        }
-
-        protected override void OnEnable()
-        {
-            if (!SDSettings.Instance.IsPauseOnDebugMenu) return;
-            _timeScale = Time.timeScale;
-            if (_timeScale <= 0)
-            {
-                _timeScale = 1f;
-            }
-
-            Time.timeScale = 0;
-        }
-
-        protected override void OnDisable()
-        {
-            if (!SDSettings.Instance.IsPauseOnDebugMenu) return;
-            Time.timeScale = _timeScale;
         }
 
         internal void Open()
@@ -100,7 +79,7 @@ namespace SmartDebugger
 
         private void AddScale(float value)
         {
-            _canvasScaler.scaleFactor = ScaleFactor.Value += value;
+            _canvasScaler.scaleFactor = _scaleFactor.Value += value;
         }
     }
 }
