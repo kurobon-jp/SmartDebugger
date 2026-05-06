@@ -1,8 +1,9 @@
 # SmartDebugger
 
-SmartDebugger is a **lightweight, extensible in-game debugging tool for Unity**, primarily designed for mobile platforms.
+SmartDebugger is a **lightweight, extensible in-game debugging tool for Unity**, designed primarily for **mobile (Android / iOS)** but also usable in standalone builds.
 
-It allows you to inspect system information, tweak debug values, view logs, monitor basic performance, and collect bug reports **directly on real devices after build**.
+It allows you to inspect system information, tweak runtime values, view logs, monitor performance, and collect bug reports — **directly on real devices after build**, without needing the Unity Editor.
+
 
 ---
 
@@ -44,12 +45,12 @@ Supported types:
 
 | Type | Variable | Field |
 |------|-------------|----|
-| bool | BoolVariable | `(Checkbox)`
-| int | IntVariable | `(InputField, Slider)`
-| float | FloatVariable | `(InputField, Slider)`
-| string | TextVariable | `(InputField)`
-| enum | EnumVariable | `(Dropdown)`
-| List | SelectionVariable | `(Dropdown)`
+| bool | BoolVariable | `Checkbox`
+| int | IntVariable | `InputField, Slider`
+| float | FloatVariable | `InputField, Slider`
+| string | TextVariable | `InputField`
+| enum | EnumVariable | `Dropdown`
+| List | SelectionVariable | `Dropdown`
 
 All values are reflected immediately when changed from the UI.
 
@@ -143,16 +144,26 @@ This is intended for **quick inspection**, not deep profiling.
 
 ## 5. Bug Report
 
-Allows testers or developers to **collect bug reports directly from the device**.
+Collect bug reports directly from users or testers.
 
-Collected data may include:
+### Includes
 
-- User-entered description
-- SystemInfo
-- Runtime logs
-- Screenshot
+* User description
+* System information
+* Runtime logs
+* Screenshot
+* Screen recording (via [InstantReplay](https://github.com/CyberAgentGameEntertainment/InstantReplay))
 
-Ideal for QA and playtesting builds.
+### Sending Reports
+
+You can implement custom reporters:
+
+* Discord
+* Slack
+* HTTP API
+* Internal tools
+
+---
 
 <img src="media/bugreport.png" width="800" />
 
@@ -179,7 +190,6 @@ SDSettings must be registered in the preloaded assets.
 |-------|-------------|
 | **Auto Initialize** | Automatically initializes SmartDebugger at runtime |
 | **Dont Destroy On Load** | Keeps the debugger across scene loads |
-| **Pause On Debug Menu** | Pauses the game while the debug menu is open |
 | **Auto Generate EventSystem** | Automatically creates an `EventSystem` if none exists |
 
 ### Open / Close Triggers
