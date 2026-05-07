@@ -26,8 +26,8 @@ namespace SmartDebugger
         [SerializeField] private Text _stackTrace;
 
         private int _selected = -1;
-        private float _normalizedPosition;
         private LogReceiver _logReceiver;
+        private bool _isAutoScroll;
 
         protected override void Start()
         {
@@ -37,12 +37,13 @@ namespace SmartDebugger
         private void OnVisibleRangeChanged(Range visibleRange)
         {
             _scrollButtons.SetActive(_scrollbar.gameObject.activeSelf);
-            _normalizedPosition = visibleRange.End >= GetDataCount() - 1 ? 1f : float.NaN;
+            _isAutoScroll = visibleRange.End >= GetDataCount() - 1;
         }
 
         protected override void OnEnable()
         {
             _logReceiver ??= SmartDebug.Instance.LogReceiver;
+            _isAutoScroll = true;
             _infoToggle.SetIsOnWithoutNotify(!_logReceiver.IsInfoFilter);
             _warnToggle.SetIsOnWithoutNotify(!_logReceiver.IsWarnFilter);
             _errorToggle.SetIsOnWithoutNotify(!_logReceiver.IsErrorFilter);
@@ -93,15 +94,16 @@ namespace SmartDebugger
                 types |= LogTypes.Error;
             }
 
-            _normalizedPosition = 1f;
             _logReceiver.Filter(types, _filterText.text);
             _listScroll.Refresh();
         }
 
         private void LateUpdate()
         {
-            if (_listScroll.IsDragging || float.IsNaN(_normalizedPosition)) return;
-            _listScroll.Refresh(_normalizedPosition, false);
+            if (_isAutoScroll && !_listScroll.IsDragging &&  !_listScroll.IsScrolling)
+            {
+                _listScroll.Refresh(1f, false);
+            }
         }
 
         public void Clear()
@@ -110,7 +112,6 @@ namespace SmartDebugger
             UpdateCount();
             _description.SetActive(false);
             _selected = -1;
-            _normalizedPosition = 1f;
             _listScroll.Refresh();
         }
 
@@ -130,17 +131,10 @@ namespace SmartDebugger
             if (!go.TryGetComponent(out LogListItem listItem)) return;
             var entry = _logReceiver.FindByIndex(index);
             var isSelected = _selected == entry.Id;
-            listItem.Bind(entry, isSelected, i =>
+            listItem.Bind(entry, isSelected, id =>
             {
-                if (isSelected)
-                {
-                    _selected = -1;
-                }
-                else
-                {
-                    _selected = entry.Id;
-                }
-
+                _selected = isSelected ? -1 : id;
+                _isAutoScroll = false;
                 UpdateDescription();
             });
         }
@@ -169,7 +163,8 @@ namespace SmartDebugger
 
         public void ScrollTo(float normalizedPosition)
         {
-            _normalizedPosition = normalizedPosition;
+            _isAutoScroll = normalizedPosition >= 1f;
+            _listScroll.Refresh(normalizedPosition, false);
         }
 
         public void OnCopy()
