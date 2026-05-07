@@ -42,20 +42,20 @@ namespace SmartDebugger
         internal void Sample()
         {
             SampleOffset = _sampleOffset;
-            SampleCps();
+            SampleCpu();
             SampleMemory();
             _sampleOffset = (_sampleOffset + 1) % SampleCount;
         }
 
-        private void SampleCps()
+        private void SampleCpu()
         {
             var cpuTotalFrameTime = GetMs(_cpuTotalFrameTime);
             var cpuMainThreadFrameTime = GetMs(_cpuMainThreadFrameTime);
             var cpuRenderThreadFrameTime = GetMs(_cpuRenderThreadFrameTime);
             var physicsTime = GetMs(_physicsProcessing);
             physicsTime +=  GetMs(_physics2DSimulate);
-            var waitMs = Mathf.Max(0, cpuTotalFrameTime - cpuMainThreadFrameTime - cpuRenderThreadFrameTime);
-            CpuSamples[SampleOffset] = new Vector4(cpuMainThreadFrameTime - physicsTime, cpuRenderThreadFrameTime, physicsTime, waitMs);
+            var otherTime = Mathf.Max(0, cpuTotalFrameTime - cpuMainThreadFrameTime - cpuRenderThreadFrameTime);
+            CpuSamples[SampleOffset] = new Vector4(cpuMainThreadFrameTime - physicsTime, cpuRenderThreadFrameTime, physicsTime, otherTime);
             DeltaTimes.Enqueue(Time.unscaledDeltaTime);
         }
 
