@@ -107,7 +107,7 @@ namespace SmartDebugger
             SmartDebug.Instance.HideCanvas();
             yield return new WaitForEndOfFrame();
             var tex = ScreenCapture.CaptureScreenshotAsTexture();
-            SmartDebug.Instance.OpenCanvas();
+            SmartDebug.Instance.ShowCanvas();
             var screenShot = tex.EncodeToPNG();
             Destroy(tex);
             tcs.SetResult(screenShot);
