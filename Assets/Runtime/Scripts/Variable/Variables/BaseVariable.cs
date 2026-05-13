@@ -14,6 +14,11 @@ namespace SmartDebugger
         GameObject Build(IVariable variable, Transform parent);
     }
 
+    public interface IRefreshable
+    {
+        void Refresh();
+    }
+
     public abstract class BaseVariable : IVariable
     {
         private string _title;
@@ -44,11 +49,12 @@ namespace SmartDebugger
         }
     }
 
-    public abstract class SerializeVariable<T> : BaseVariable
+    public abstract class SerializeVariable<T> : BaseVariable, IRefreshable
     {
         private T _value;
         private bool _deserialized;
         private readonly T _defaultValue;
+        private readonly Func<T> _getter;
 
         public T Value
         {
@@ -77,6 +83,14 @@ namespace SmartDebugger
             bool interactable = true) : base(title, interactable)
         {
             _defaultValue = defaultValue;
+            SerializeKey = serializeKey;
+        }
+
+        protected SerializeVariable(string title, Func<T> getter, string serializeKey = null,
+            bool interactable = true) : base(title, interactable)
+        {
+            _getter = getter;
+            _defaultValue = getter.Invoke();
             SerializeKey = serializeKey;
         }
 
@@ -111,6 +125,13 @@ namespace SmartDebugger
         }
 
         private protected abstract void SetSerializeValue(T value);
+
         private protected abstract T GetSerializeValue(T defaultValue);
+
+        void IRefreshable.Refresh()
+        {
+            if (_getter == null) return;
+            Value = _getter.Invoke();
+        }
     }
 }

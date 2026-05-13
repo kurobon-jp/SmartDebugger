@@ -21,5 +21,17 @@ namespace SmartDebugger
             interactable)
         {
         }
+        
+        public EnumVariable(string title,
+            Func<int> getter,
+            string serializeKey = null,
+            bool interactable = true
+        ) : base(
+            title,
+            () => Enum.GetNames(typeof(T)), getter,
+            serializeKey,
+            interactable)
+        {
+        }
     }
 }

@@ -1,12 +1,20 @@
+using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SmartDebugger
 {
     public class TextVariable : SerializeVariable<string>
     {
-        public TextVariable(string title, string serializeKey = null, string defaultValue = "",
+        public TextVariable(string title, string defaultValue = "", string serializeKey = null,
             bool interactable = true)
             : base(title, defaultValue, serializeKey, interactable)
+        {
+        }
+
+        public TextVariable(string title, Func<string> getter, string serializeKey = null,
+            bool interactable = true)
+            : base(title, getter, serializeKey, interactable)
         {
         }
 

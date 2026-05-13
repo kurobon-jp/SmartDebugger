@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SmartDebugger
 {
@@ -10,6 +12,13 @@ namespace SmartDebugger
             string serializeKey = null,
             bool interactable = true) : base(title,
             defaultValue, serializeKey, interactable)
+        {
+        }
+
+        public BoolVariable(string title,
+            Func<bool> getter,
+            string serializeKey = null,
+            bool interactable = true) : base(title, getter, serializeKey, interactable)
         {
         }
 

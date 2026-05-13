@@ -11,7 +11,9 @@ namespace SmartDebugger
         [SerializeField] private Image _icon;
         [SerializeField] private Transform _fieldParent;
 
+        private bool _isExpand = true;
         private readonly List<GameObject> _fields = new();
+        private readonly List<IRefreshable> _refreshables = new();
 
         internal void Bind(FieldGroup group)
         {
@@ -21,6 +23,7 @@ namespace SmartDebugger
             }
 
             _fields.Clear();
+            _refreshables.Clear();
             _title.text = group.Title;
             _toggle.SetIsOnWithoutNotify(group.Foldout);
             _fieldParent.gameObject.SetActive(group.Foldout);
@@ -28,13 +31,24 @@ namespace SmartDebugger
             foreach (var variable in group.Variables)
             {
                 _fields.Add(variable.factory.Build(variable.variable, _fieldParent));
+                if (variable.variable is IRefreshable refreshable)
+                {
+                    _refreshables.Add(refreshable);
+                }
             }
         }
 
         public void OnToggleChanged(bool isOn)
         {
+            _isExpand = isOn;
             _fieldParent.gameObject.SetActive(isOn);
             _icon.transform.localEulerAngles = Vector3.forward * (isOn ? 0 : 90);
+        }
+
+        private void Update()
+        {
+            if (!_isExpand) return;
+            _refreshables.ForEach(x => x.Refresh());
         }
     }
 }

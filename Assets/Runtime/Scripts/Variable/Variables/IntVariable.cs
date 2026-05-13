@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -12,10 +13,27 @@ namespace SmartDebugger
             int defaultValue = 0,
             int minValue = 0,
             int maxValue = int.MaxValue,
-            string serializeKey = null
-            , bool interactable = true) : base(
+            string serializeKey = null,
+            bool interactable = true
+            ) : base(
             title,
             defaultValue,
+            serializeKey,
+            interactable)
+        {
+            MinValue = minValue;
+            MaxValue = maxValue;
+        }
+        
+        public IntVariable(string title,
+            Func<int> getter,
+            int minValue = 0,
+            int maxValue = int.MaxValue,
+            string serializeKey = null,
+            bool interactable = true
+        ) : base(
+            title,
+            getter,
             serializeKey,
             interactable)
         {

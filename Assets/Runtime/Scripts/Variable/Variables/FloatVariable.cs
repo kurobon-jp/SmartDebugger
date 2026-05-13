@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -16,6 +17,22 @@ namespace SmartDebugger
             float maxValue = 1f,
             string serializeKey = null,
             bool interactable = true) : base(title, defaultValue, serializeKey, interactable)
+        {
+            MinValue = minValue;
+            MaxValue = maxValue;
+        }
+
+        public FloatVariable(string title,
+            Func<float> getter,
+            float minValue = 0f,
+            float maxValue = 1f,
+            string serializeKey = null,
+            bool interactable = true
+        ) : base(
+            title,
+            getter,
+            serializeKey,
+            interactable)
         {
             MinValue = minValue;
             MaxValue = maxValue;

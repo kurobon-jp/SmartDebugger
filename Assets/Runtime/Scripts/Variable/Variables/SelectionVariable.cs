@@ -6,15 +6,15 @@ namespace SmartDebugger
 {
     public class SelectionVariable : IntVariable
     {
-        private readonly Func<string[]> _getter;
+        private readonly Func<string[]> _selections;
 
-        public string[] Selections => _getter?.Invoke();
+        public string[] Selections => _selections?.Invoke();
 
         public override string TextValue => Selections[Value];
 
         public SelectionVariable(
             string title,
-            Func<string[]> getter,
+            Func<string[]> selections,
             int defaultValue = 0,
             string serializeKey = null,
             bool interactable = true) : base(
@@ -23,7 +23,21 @@ namespace SmartDebugger
             serializeKey: serializeKey,
             interactable: interactable)
         {
-            _getter = getter;
+            _selections = selections;
+        }
+        
+        public SelectionVariable(
+            string title,
+            Func<string[]> selections,
+            Func<int> getter,
+            string serializeKey = null,
+            bool interactable = true) : base(
+            title,
+            getter,
+            serializeKey: serializeKey,
+            interactable: interactable)
+        {
+            _selections = selections;
         }
 
         private protected override int Validate(int value)
