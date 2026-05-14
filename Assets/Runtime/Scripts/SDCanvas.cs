@@ -14,6 +14,8 @@ namespace SmartDebugger
         [SerializeField] private MainTab _mainTab;
         [SerializeField] private Transform _contentParent;
 
+        private bool _wasCursorVisible;
+
         private readonly List<MainTab> _mainTabs = new();
         private readonly FloatVariable _scaleFactor = new("ScaleFactor", 1f, 0.5f, 1.5f, "sd.scale_factor");
 
@@ -43,6 +45,8 @@ namespace SmartDebugger
         {
             SetAlpha(1f);
             gameObject.SetActive(true);
+            _wasCursorVisible = Cursor.visible;
+            Cursor.visible = true;
         }
 
         internal void Open<T>()
@@ -60,6 +64,7 @@ namespace SmartDebugger
         internal void Close()
         {
             gameObject.SetActive(false);
+            Cursor.visible = _wasCursorVisible;
         }
 
         internal void SetAlpha(float alpha)
