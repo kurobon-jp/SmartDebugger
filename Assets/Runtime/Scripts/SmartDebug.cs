@@ -36,7 +36,7 @@ namespace SmartDebugger
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void OnSceneLoaded()
         {
-            if (!SDSettings.Instance.IsAutoInitialize) return;
+            if (!Application.isPlaying || !SDSettings.Instance.IsAutoInitialize) return;
             Initialize();
         }
 
