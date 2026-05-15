@@ -21,7 +21,7 @@ namespace SmartDebugger
         [SerializeField] private GameObject _scrollButtons;
         [SerializeField] private LogListItem _listItem;
 
-        [SerializeField] private GameObject _description;
+        [SerializeField] private ScrollRect _description;
         [SerializeField] private Text _message;
         [SerializeField] private Text _stackTrace;
 
@@ -110,7 +110,7 @@ namespace SmartDebugger
         {
             _logReceiver.Clear();
             UpdateCount();
-            _description.SetActive(false);
+            _description.gameObject.SetActive(false);
             _selected = -1;
             _listScroll.Refresh();
         }
@@ -143,11 +143,12 @@ namespace SmartDebugger
         {
             if (_selected < 0)
             {
-                _description.SetActive(false);
+                _description.gameObject.SetActive(false);
             }
             else
             {
-                _description.SetActive(true);
+                _description.gameObject.SetActive(true);
+                _description.normalizedPosition = Vector2.up;
                 var entry = _logReceiver.FindById(_selected);
                 _message.text = entry.Message;
                 _stackTrace.text = string.Join("\n", entry.StackTrace);
