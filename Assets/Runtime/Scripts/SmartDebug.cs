@@ -31,7 +31,7 @@ namespace SmartDebugger
 
         public bool IsCanvasVisible => _canvas.gameObject.activeSelf;
 
-        public event Action<bool> OnCanvasVisiblityChanged;
+        public event Action<bool> OnCanvasVisibilityChanged;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void OnSceneLoaded()
@@ -105,14 +105,14 @@ namespace SmartDebugger
                 _canvas.Open();
             }
 
-            OnCanvasVisiblityChanged?.Invoke(true);
+            OnCanvasVisibilityChanged?.Invoke(true);
         }
 
         public void CloseCanvas()
         {
             if (!IsCanvasVisible) return;
             _canvas.Close();
-            OnCanvasVisiblityChanged?.Invoke(false);
+            OnCanvasVisibilityChanged?.Invoke(false);
         }
 
         internal void ShowCanvas()
