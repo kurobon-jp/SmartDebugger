@@ -24,6 +24,7 @@ namespace SmartDebugger
         private ProfilerRecorder _physicsProcessing;
 
         private int _sampleOffset;
+        private float _realtimeSinceStartup;
 
         internal FrameRecorder(int sampleCount = 180)
         {
@@ -32,9 +33,12 @@ namespace SmartDebugger
             MemorySamples = new Vector4[sampleCount];
             DeltaTimes = new FloatQueue(sampleCount);
 
+            _realtimeSinceStartup = Time.realtimeSinceStartup;
             _cpuTotalFrameTime = ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Total Frame Time");
-            _cpuMainThreadFrameTime = ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Main Thread Frame Time");
-            _cpuRenderThreadFrameTime = ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Render Thread Frame Time");
+            _cpuMainThreadFrameTime =
+                ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Main Thread Frame Time");
+            _cpuRenderThreadFrameTime =
+                ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Render Thread Frame Time");
             _physicsProcessing = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "FixedUpdate.PhysicsFixedUpdate");
             _physics2DSimulate = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "Physics2D.Simulate");
         }
@@ -53,10 +57,13 @@ namespace SmartDebugger
             var cpuMainThreadFrameTime = GetMs(_cpuMainThreadFrameTime);
             var cpuRenderThreadFrameTime = GetMs(_cpuRenderThreadFrameTime);
             var physicsTime = GetMs(_physicsProcessing);
-            physicsTime +=  GetMs(_physics2DSimulate);
+            physicsTime += GetMs(_physics2DSimulate);
             var otherTime = Mathf.Max(0, cpuTotalFrameTime - cpuMainThreadFrameTime - cpuRenderThreadFrameTime);
-            CpuSamples[SampleOffset] = new Vector4(cpuMainThreadFrameTime - physicsTime, cpuRenderThreadFrameTime, physicsTime, otherTime);
-            DeltaTimes.Enqueue(Time.unscaledDeltaTime);
+            CpuSamples[SampleOffset] = new Vector4(cpuMainThreadFrameTime - physicsTime, cpuRenderThreadFrameTime,
+                physicsTime, otherTime);
+            var realtimeSinceStartup = Time.realtimeSinceStartup;
+            DeltaTimes.Enqueue(realtimeSinceStartup - _realtimeSinceStartup);
+            _realtimeSinceStartup = realtimeSinceStartup;
         }
 
         private void SampleMemory()

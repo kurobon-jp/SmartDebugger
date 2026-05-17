@@ -79,7 +79,7 @@ namespace SmartDebugger
             _targetLine.SetFrameRate(_targetFrameRate);
 
             _elapsed += Time.unscaledDeltaTime;
-            if (_elapsed < 1f) return;
+            if (_elapsed < 0.5f) return;
             var deltaTimes = frameRecorder.DeltaTimes;
             _fpsText.text = $"{1f / deltaTimes.Average:F2}";
             _avgFrameText.text = $"{deltaTimes.Average * 1000f:F2} ms";
