@@ -26,7 +26,7 @@ namespace SmartDebugger
 
         internal LogReceiver()
         {
-            Application.logMessageReceived += OnLogMessageReceived;
+            Application.logMessageReceivedThreaded += OnLogMessageReceived;
         }
 
         private void OnLogMessageReceived(string condition, string stackTrace, LogType type)
