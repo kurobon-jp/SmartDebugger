@@ -29,7 +29,6 @@ namespace SmartDebugger
         private LogReceiver _logReceiver;
         private bool _isAutoScroll;
         private bool _isDirty;
-        private int _dataCount;
 
         protected override void Start()
         {
@@ -39,7 +38,7 @@ namespace SmartDebugger
         private void OnVisibleRangeChanged(Range visibleRange)
         {
             _scrollButtons.SetActive(_scrollbar.gameObject.activeSelf);
-            _isAutoScroll = visibleRange.End >= _dataCount - 1;
+            _isAutoScroll = visibleRange.End >= GetDataCount() - 1;
         }
 
         protected override void OnEnable()
@@ -70,7 +69,6 @@ namespace SmartDebugger
 
         private void UpdateCount()
         {
-            _dataCount = _logReceiver.Count;
             var count = _logReceiver.InfoCount;
             _infoCount.text = count < 1000 ? $"{count}" : "999+";
             count = _logReceiver.WarnCount;
@@ -133,7 +131,7 @@ namespace SmartDebugger
 
         public int GetDataCount()
         {
-            return _dataCount;
+            return _logReceiver.Count;
         }
 
         public void SetData(int index, GameObject go)
