@@ -6,6 +6,7 @@ namespace SmartDebugger
 {
     public class LogReceiver
     {
+        private readonly List<LogEntry> _queue = new();
         private readonly List<LogEntry> _filtered = new();
         private int _ids;
         private LogTypes _filterTypes;
@@ -31,9 +32,25 @@ namespace SmartDebugger
 
         private void OnLogMessageReceived(string condition, string stackTrace, LogType type)
         {
-            var entry = new LogEntry(_ids++, condition, stackTrace, type);
-            AddEntry(entry);
-            OnAdded?.Invoke(entry);
+            lock (_queue)
+            {
+                _queue.Add(new LogEntry(_ids++, condition, stackTrace, type));
+            }
+        }
+
+        public void Update()
+        {
+            lock (_queue)
+            {
+                if (_queue.Count == 0) return;
+                foreach (var entry in _queue)
+                {
+                    AddEntry(entry);
+                    OnAdded?.Invoke(entry);
+                }
+
+                _queue.Clear();
+            }
         }
 
         public LogEntry FindById(int id)
@@ -77,8 +94,8 @@ namespace SmartDebugger
 
         public void Clear()
         {
-            Entries.Clear();
             _filtered.Clear();
+            Entries.Clear();
             InfoCount = 0;
             WarnCount = 0;
             ErrorCount = 0;

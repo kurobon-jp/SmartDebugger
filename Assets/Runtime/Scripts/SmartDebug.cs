@@ -127,6 +127,7 @@ namespace SmartDebugger
 
         private void LateUpdate()
         {
+            LogReceiver?.Update();
             FrameRecorder?.Sample();
             if (!IsCanvasVisible)
             {
