@@ -19,22 +19,19 @@ namespace SmartDebugger
 
         protected override void OnEnable()
         {
-            if (SDSettings.Instance.IsShowErrorIndicator)
-            {
-                Application.logMessageReceived += OnLogMessageReceived;
-            }
-
+            Application.logMessageReceivedThreaded += OnLogMessageReceived;
             Clear();
         }
 
         protected override void OnDisable()
         {
-            Application.logMessageReceived -= OnLogMessageReceived;
+            Application.logMessageReceivedThreaded -= OnLogMessageReceived;
             Clear();
         }
 
         private void OnLogMessageReceived(string condition, string stackTrace, LogType type)
         {
+            if (!SDSettings.Instance.IsShowErrorIndicator) return;
             if (type is not (LogType.Error or LogType.Exception or LogType.Assert) || _isBlinking) return;
             HasError = true;
             StopAllCoroutines();
