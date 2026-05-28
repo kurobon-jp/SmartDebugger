@@ -53,13 +53,11 @@ namespace SmartDebugger
             _logReceiver.OnAdded += OnLogAdded;
             UpdateFilter();
             UpdateCount();
-            ErrorIndicator.Clear();
         }
 
         protected override void OnDisable()
         {
             _logReceiver.OnAdded -= OnLogAdded;
-            ErrorIndicator.Clear();
         }
 
         private void OnLogAdded(LogEntry _)

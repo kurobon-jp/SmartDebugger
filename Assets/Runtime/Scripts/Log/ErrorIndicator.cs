@@ -10,38 +10,12 @@ namespace SmartDebugger
 
         private bool _isBlinking;
 
-        public static bool HasError { get; private set; }
-
         protected override void Awake()
         {
             _canvas.sortingOrder = SDSettings.Instance.CanvasSortingOrder + 1;
         }
 
-        protected override void OnEnable()
-        {
-            if (SDSettings.Instance.IsShowErrorIndicator)
-            {
-                Application.logMessageReceived += OnLogMessageReceived;
-            }
-
-            Clear();
-        }
-
-        protected override void OnDisable()
-        {
-            Application.logMessageReceived -= OnLogMessageReceived;
-            Clear();
-        }
-
-        private void OnLogMessageReceived(string condition, string stackTrace, LogType type)
-        {
-            if (type is not (LogType.Error or LogType.Exception or LogType.Assert) || _isBlinking) return;
-            HasError = true;
-            StopAllCoroutines();
-            StartCoroutine(Blink());
-        }
-
-        private IEnumerator Blink()
+        private IEnumerator BlinkAsync()
         {
             var elapsed = 0f;
             var duration = 2f;
@@ -59,9 +33,10 @@ namespace SmartDebugger
             _canvasGroup.gameObject.SetActive(false);
         }
 
-        public static void Clear()
+        public void Blink()
         {
-            HasError = false;
+            if (_isBlinking) return;
+            StartCoroutine(BlinkAsync());
         }
     }
 }
