@@ -10,7 +10,8 @@ namespace SmartDebugger
         private static SmartDebug _instance;
 
         [SerializeField] private SDCanvas _canvas;
-
+        [SerializeField] private ErrorIndicator _indicator;
+        
         private readonly List<IEventDetector> _openEventDetectors = new();
         private readonly List<IEventDetector> _closeEventDetectors = new();
         private readonly List<IFieldLayout> _fieldLayouts = new();
@@ -55,9 +56,10 @@ namespace SmartDebugger
 
         private void Awake()
         {
+            var settings = SDSettings.Instance;
             LogReceiver = new LogReceiver();
             FrameRecorder = new FrameRecorder();
-            if (SDSettings.Instance.IsAutoGenerateEventSystem && EventSystem.current == null)
+            if (settings.IsAutoGenerateEventSystem && EventSystem.current == null)
             {
                 var go = new GameObject("EventSystem");
                 go.AddComponent<EventSystem>();
@@ -68,43 +70,44 @@ namespace SmartDebugger
 #endif
             }
 
-            var openShortcut = SDSettings.Instance.OpenShortcut;
+            var openShortcut = settings.OpenShortcut;
             if (openShortcut.IsEnable)
             {
                 _openEventDetectors.Add(EventDetectorFactory.CreateKeyEventDetector(openShortcut));
             }
 
-            var closeShortcut = SDSettings.Instance.CloseShortcut;
+            var closeShortcut = settings.CloseShortcut;
             if (closeShortcut.IsEnable)
             {
                 _closeEventDetectors.Add(EventDetectorFactory.CreateKeyEventDetector(closeShortcut));
             }
 
-            var openTapEvent = SDSettings.Instance.OpenTapEvent;
+            var openTapEvent = settings.OpenTapEvent;
             if (openTapEvent.IsEnable)
             {
                 _openEventDetectors.Add(EventDetectorFactory.CreateMultiTapEventDetector(openTapEvent));
             }
+
+            LogReceiver.OnAdded += OnLogAdded;
+        }
+
+        private void OnLogAdded(LogEntry entry)
+        {
+            if (entry.Types != LogTypes.Error || !SDSettings.Instance.IsShowErrorIndicator || IsCanvasVisible) return;
+            _indicator.Blink();
         }
 
         private void OnDestroy()
         {
             FrameRecorder?.Dispose();
             FrameRecorder = null;
+            LogReceiver.OnAdded -= OnLogAdded;
         }
 
-        public void OpenCanvas(bool showLog = false)
+        public void OpenCanvas()
         {
             if (IsCanvasVisible) return;
-            if (showLog)
-            {
-                _canvas.Open<LogTabContent>();
-            }
-            else
-            {
-                _canvas.Open();
-            }
-
+            _canvas.Open();
             OnCanvasVisibilityChanged?.Invoke(true);
         }
 
@@ -134,7 +137,7 @@ namespace SmartDebugger
                 foreach (var detector in _openEventDetectors)
                 {
                     if (!detector.IsTriggered()) continue;
-                    OpenCanvas(ErrorIndicator.HasError);
+                    OpenCanvas();
                     break;
                 }
             }
