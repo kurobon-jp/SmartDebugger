@@ -21,7 +21,7 @@ jobs:
         with:
           # Public Repoなら不要
           # Private Repoの場合のみ設定
-          # octopus-api-key: ${{ secrets.OCTOPUS_API_KEY }}
+          octopus-api-key: ${{ secrets.OCTOPUS_API_KEY }}
 
           # 日本語レビュー
           review-language: "ja"
