@@ -71,10 +71,11 @@
       }
     },
     "jp.co.cyberagent.instant-replay": {
-      "version": "file:C:/Users/kurob/Desktop/Unity/ScreenRecord/Packages/InstantReplay/Packages/jp.co.cyberagent.instant-replay",
+      "version": "https://github.com/CyberAgentGameEntertainment/InstantReplay.git?path=/Packages/jp.co.cyberagent.instant-replay",
       "depth": 0,
-      "source": "local",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {},
+      "hash": "e9c51149ddf586c2da5672d8795c68f68925d2b1"
     },
     "jp.co.cyberagent.instant-replay.dependencies": {
       "version": "https://github.com/CyberAgentGameEntertainment/InstantReplay.git?path=/Packages/jp.co.cyberagent.instant-replay.dependencies",
