@@ -28,7 +28,9 @@ jobs:
 
           # Unity/C#向けチューニング
           extra-instructions: |
-            すべてのレビューコメントを日本語で出力してください。
+            **必ず日本語のみでレビューしてください。英語は使わないでください。**
+            You MUST respond in Japanese only. Do not use English.
+
 
             レビューは簡潔にしてください。
             重大な問題を優先してください。
