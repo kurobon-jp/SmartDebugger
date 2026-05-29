@@ -18,13 +18,12 @@ namespace SmartDebugger
         internal long TotalBytes { get; private set; }
 
         private ProfilerRecorder _cpuTotalFrameTime;
-        private ProfilerRecorder _cpuMainThreadFrameTime;
         private ProfilerRecorder _cpuRenderThreadFrameTime;
         private ProfilerRecorder _physics2DSimulate;
         private ProfilerRecorder _physicsProcessing;
+        private ProfilerRecorder _playerLoop;
 
         private int _sampleOffset;
-        private float _realtimeSinceStartup;
 
         internal FrameRecorder(int sampleCount = 180)
         {
@@ -33,14 +32,12 @@ namespace SmartDebugger
             MemorySamples = new Vector4[sampleCount];
             DeltaTimes = new FloatQueue(sampleCount);
 
-            _realtimeSinceStartup = Time.realtimeSinceStartup;
             _cpuTotalFrameTime = ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Total Frame Time");
-            _cpuMainThreadFrameTime =
-                ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Main Thread Frame Time");
             _cpuRenderThreadFrameTime =
                 ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Render Thread Frame Time");
             _physicsProcessing = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "FixedUpdate.PhysicsFixedUpdate");
             _physics2DSimulate = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "Physics2D.Simulate");
+            _playerLoop = ProfilerRecorder.StartNew(ProfilerCategory.Scripts, "PlayerLoop");
         }
 
         internal void Sample()
@@ -54,16 +51,15 @@ namespace SmartDebugger
         private void SampleCpu()
         {
             var cpuTotalFrameTime = GetMs(_cpuTotalFrameTime);
-            var cpuMainThreadFrameTime = GetMs(_cpuMainThreadFrameTime);
+            var cpuMainThreadFrameTime = GetMs(_playerLoop);
             var cpuRenderThreadFrameTime = GetMs(_cpuRenderThreadFrameTime);
             var physicsTime = GetMs(_physicsProcessing);
             physicsTime += GetMs(_physics2DSimulate);
-            var otherTime = Mathf.Max(0, cpuTotalFrameTime - cpuMainThreadFrameTime - cpuRenderThreadFrameTime);
-            CpuSamples[SampleOffset] = new Vector4(cpuMainThreadFrameTime - physicsTime, cpuRenderThreadFrameTime,
+            var otherTime = Mathf.Max(0, cpuTotalFrameTime - cpuMainThreadFrameTime);
+            CpuSamples[SampleOffset] = new Vector4(cpuMainThreadFrameTime - cpuRenderThreadFrameTime - physicsTime,
+                cpuRenderThreadFrameTime,
                 physicsTime, otherTime);
-            var realtimeSinceStartup = Time.realtimeSinceStartup;
-            DeltaTimes.Enqueue(realtimeSinceStartup - _realtimeSinceStartup);
-            _realtimeSinceStartup = realtimeSinceStartup;
+            DeltaTimes.Enqueue(cpuTotalFrameTime / 1000f);
         }
 
         private void SampleMemory()
@@ -85,10 +81,10 @@ namespace SmartDebugger
         public void Dispose()
         {
             _cpuTotalFrameTime.Dispose();
-            _cpuMainThreadFrameTime.Dispose();
             _cpuRenderThreadFrameTime.Dispose();
             _physics2DSimulate.Dispose();
             _physicsProcessing.Dispose();
+            _playerLoop.Dispose();
         }
     }
 }
