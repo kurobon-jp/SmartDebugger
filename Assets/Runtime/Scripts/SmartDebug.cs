@@ -14,12 +14,12 @@ namespace SmartDebugger
         
         private readonly List<IEventDetector> _openEventDetectors = new();
         private readonly List<IEventDetector> _closeEventDetectors = new();
-        private readonly List<IFieldLayout> _fieldLayouts = new();
+        private readonly FieldLayouts _fieldLayouts = new();
 
         public LogReceiver LogReceiver { get; private set; }
         internal FrameRecorder FrameRecorder { get; private set; }
 
-        internal IReadOnlyList<IFieldLayout> FieldLayouts => _fieldLayouts;
+        internal FieldLayouts FieldLayouts => _fieldLayouts;
 
         public static SmartDebug Instance
         {
