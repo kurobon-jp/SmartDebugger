@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -9,18 +10,19 @@ namespace SmartDebugger
 
         internal int Count => _fieldLayouts.Count;
         internal IFieldLayout this[int index] => _fieldLayouts[index];
-        internal bool IsDirty { get; set; }
+
+        internal event Action OnFieldLayoutsChanged;
 
         internal void Add(IFieldLayout fieldLayout)
         {
             _fieldLayouts.Add(fieldLayout);
-            IsDirty = true;
+            OnFieldLayoutsChanged?.Invoke();
         }
 
         internal void Remove(IFieldLayout fieldLayout)
         {
             _fieldLayouts.Remove(fieldLayout);
-            IsDirty = true;
+            OnFieldLayoutsChanged?.Invoke();
         }
 
         public IEnumerator<IFieldLayout> GetEnumerator()

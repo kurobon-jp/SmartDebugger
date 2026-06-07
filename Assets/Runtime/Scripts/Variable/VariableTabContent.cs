@@ -13,24 +13,36 @@ namespace SmartDebugger
 
         private FieldLayouts _fieldLayouts;
         private IFieldLayout _current;
+        private bool _isFieldLayoutsChanged;
 
         protected override void OnEnable()
         {
             _fieldLayouts = SmartDebug.Instance.FieldLayouts;
+            _fieldLayouts.OnFieldLayoutsChanged -= OnFieldLayoutsChanged;
+            _fieldLayouts.OnFieldLayoutsChanged += OnFieldLayoutsChanged;
+            _isFieldLayoutsChanged = false;
             Rebuild();
+        }
+
+        protected override void OnDisable()
+        {
+            _fieldLayouts.OnFieldLayoutsChanged -= OnFieldLayoutsChanged;
+        }
+
+        private void OnFieldLayoutsChanged()
+        {
+            _isFieldLayoutsChanged  = true;
         }
 
         private void Update()
         {
-            if (_fieldLayouts.IsDirty)
-            {
-                Rebuild();
-            }
+            if (!_isFieldLayoutsChanged) return;
+            _isFieldLayoutsChanged = false;
+            Rebuild();
         }
 
         private void Rebuild()
         {
-            _fieldLayouts.IsDirty = false;
             var removedTabs = _tabs.Keys.Except(_fieldLayouts).ToList();
             foreach (var fieldLayout in removedTabs)
             {
