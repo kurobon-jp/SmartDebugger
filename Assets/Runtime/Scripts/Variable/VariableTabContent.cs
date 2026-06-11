@@ -11,18 +11,39 @@ namespace SmartDebugger
 
         private readonly Dictionary<IFieldLayout, FieldLayoutTab> _tabs = new();
 
+        private FieldLayouts _fieldLayouts;
         private IFieldLayout _current;
+        private bool _isFieldLayoutsChanged;
 
         protected override void OnEnable()
         {
-            base.OnEnable();
+            _fieldLayouts = SmartDebug.Instance.FieldLayouts;
+            _fieldLayouts.OnFieldLayoutsChanged -= OnFieldLayoutsChanged;
+            _fieldLayouts.OnFieldLayoutsChanged += OnFieldLayoutsChanged;
+            _isFieldLayoutsChanged = false;
+            Rebuild();
+        }
+
+        protected override void OnDisable()
+        {
+            _fieldLayouts.OnFieldLayoutsChanged -= OnFieldLayoutsChanged;
+        }
+
+        private void OnFieldLayoutsChanged()
+        {
+            _isFieldLayoutsChanged  = true;
+        }
+
+        private void Update()
+        {
+            if (!_isFieldLayoutsChanged) return;
+            _isFieldLayoutsChanged = false;
             Rebuild();
         }
 
         private void Rebuild()
         {
-            var fieldLayouts = SmartDebug.Instance.FieldLayouts;
-            var removedTabs = _tabs.Keys.Except(fieldLayouts).ToList();
+            var removedTabs = _tabs.Keys.Except(_fieldLayouts).ToList();
             foreach (var fieldLayout in removedTabs)
             {
                 _tabs.Remove(fieldLayout, out var tab);
@@ -33,10 +54,10 @@ namespace SmartDebugger
                 }
             }
 
-            if (fieldLayouts.Count > 0)
+            if (_fieldLayouts.Count > 0)
             {
-                _current ??= fieldLayouts[0];
-                foreach (var fieldLayout in fieldLayouts)
+                _current ??= _fieldLayouts[0];
+                foreach (var fieldLayout in _fieldLayouts)
                 {
                     CreateTab(fieldLayout);
                 }
