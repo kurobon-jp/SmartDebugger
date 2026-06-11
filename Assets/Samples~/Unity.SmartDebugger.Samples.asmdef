@@ -1,8 +1,8 @@
 {
-    "name": "Unity.SmartDebuger.Samples",
+    "name": "Unity.SmartDebugger.Samples",
     "rootNamespace": "",
     "references": [
-        "Unity.SmartDebuge"
+        "Unity.SmartDebugger"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

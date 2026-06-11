@@ -1,6 +1,6 @@
 {
-    "name": "Unity.SmartDebuge",
-    "rootNamespace": "SmartDebuger",
+    "name": "Unity.SmartDebugger",
+    "rootNamespace": "SmartDebugger",
     "references": [
         "Unity.InputSystem",
         "Unity.SimpleScroll",
