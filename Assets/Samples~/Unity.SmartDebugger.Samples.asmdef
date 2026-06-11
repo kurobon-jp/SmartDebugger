@@ -1,5 +1,5 @@
 {
-    "name": "Unity.SmartDebuger.Samples",
+    "name": "Unity.SmartDebugger.Samples",
     "rootNamespace": "",
     "references": [
         "Unity.SmartDebugger"
