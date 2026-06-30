@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace SmartDebugger
 {
     [RequireComponent(typeof(RectTransform), typeof(CanvasRenderer))]
-    public class SafeAreaContainer : Graphic
+    internal class SafeAreaContainer : Graphic
     {
         [SerializeField] private RectTransform _content;
 

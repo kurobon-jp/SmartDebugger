@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace SmartDebugger
 {
     [RequireComponent(typeof(Toggle)), ExecuteAlways]
-    public class ToggleColorModifer : MonoBehaviour
+    internal class ToggleColorModifer : MonoBehaviour
     {
         [Serializable]
         private struct ToggleColor
@@ -14,7 +14,7 @@ namespace SmartDebugger
             public Color onColor;
             public Color offColor;
 
-            public void SetColor(bool isOn)
+            internal void SetColor(bool isOn)
             {
                 if (graphic == null) return;
                 graphic.color = isOn ? onColor : offColor;
@@ -34,7 +34,7 @@ namespace SmartDebugger
             OnValueChanged(_toggle.isOn);
         }
 
-        public void OnValueChanged(bool isOn)
+        private void OnValueChanged(bool isOn)
         {
             if (_toggleColors == null) return;
             foreach (var toggleColor in _toggleColors)

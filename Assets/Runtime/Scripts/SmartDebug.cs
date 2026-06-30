@@ -94,7 +94,7 @@ namespace SmartDebugger
         private void OnLogAdded(LogEntry entry)
         {
             if (entry.Types != LogTypes.Error || !SDSettings.Instance.IsShowErrorIndicator || IsCanvasVisible) return;
-            _indicator.Blink();
+            _indicator.Blink(entry.Message);
         }
 
         private void OnDestroy()
@@ -108,6 +108,7 @@ namespace SmartDebugger
         {
             if (IsCanvasVisible) return;
             _canvas.Open();
+            _indicator.Clear();
             OnCanvasVisibilityChanged?.Invoke(true);
         }
 
