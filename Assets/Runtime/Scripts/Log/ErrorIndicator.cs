@@ -46,6 +46,8 @@ namespace SmartDebugger
         {
             StopAllCoroutines();
             _isBlinking = false;
+            _text.text = "";
+            _icon.alpha = 0f;
         }
     }
 }
