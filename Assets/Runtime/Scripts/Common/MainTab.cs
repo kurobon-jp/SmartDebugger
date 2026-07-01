@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace SmartDebugger
 {
-    public class MainTab : BaseView
+    internal class MainTab : BaseView
     {
         [SerializeField] private Text _text;
         [SerializeField] private Image _icon;
@@ -35,29 +35,17 @@ namespace SmartDebugger
             }
         }
 
-        private void Show()
+        internal void Show()
         {
             if (_prefab == null) return;
             _content ??= Instantiate(_prefab.gameObject, _contentParent);
             _content.SetActive(true);
         }
 
-        private void Hide()
+        internal void Hide()
         {
             if (_content == null) return;
             _content.SetActive(false);
-        }
-
-        public void OnValueChanged(bool isOn)
-        {
-            if (isOn)
-            {
-                Show();
-            }
-            else
-            {
-                Hide();
-            }
         }
     }
 }

@@ -1,12 +1,14 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SmartDebugger
 {
-    public class ErrorIndicator : BaseView
+    internal class ErrorIndicator : BaseView
     {
         [SerializeField] private Canvas _canvas;
-        [SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private CanvasGroup _icon;
+        [SerializeField] private Text _text;
 
         private bool _isBlinking;
 
@@ -17,26 +19,35 @@ namespace SmartDebugger
 
         private IEnumerator BlinkAsync()
         {
-            var elapsed = 0f;
-            var duration = 2f;
+            const float duration = 2f;
             _isBlinking = true;
-            _canvasGroup.gameObject.SetActive(true);
+
+            var elapsed = 0f;
             while (elapsed < duration)
             {
                 var t = Mathf.Clamp01(elapsed / duration);
-                _canvasGroup.alpha = Mathf.PingPong(t * 4, 1);
+                _icon.alpha = 1f - Mathf.PingPong(t * 6, 1);
                 elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }
 
+            _icon.alpha = 1f;
             _isBlinking = false;
-            _canvasGroup.gameObject.SetActive(false);
         }
 
-        public void Blink()
+        internal void Blink(string text)
         {
             if (_isBlinking) return;
+            _text.text = text;
             StartCoroutine(BlinkAsync());
+        }
+
+        internal void Clear()
+        {
+            StopAllCoroutines();
+            _isBlinking = false;
+            _text.text = "";
+            _icon.alpha = 0f;
         }
     }
 }

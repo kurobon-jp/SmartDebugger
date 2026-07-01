@@ -6,17 +6,17 @@ namespace SmartDebugger
     internal class IndexedQueue<T> : IEnumerable<T>
     {
         protected List<T> Queue { get; }
-        public T this[int index] => Queue[index];
-        public int Count => Queue.Count;
-        public int Capacity { get; }
+        internal T this[int index] => Queue[index];
+        internal int Count => Queue.Count;
+        internal int Capacity { get; }
 
-        public IndexedQueue(int capacity = 100)
+        internal IndexedQueue(int capacity = 100)
         {
             Capacity = capacity;
             Queue = new List<T>(capacity);
         }
 
-        public virtual void Enqueue(T current)
+        internal virtual void Enqueue(T current)
         {
             Queue.Insert(0, current);
             if (Count > Capacity)
@@ -25,7 +25,7 @@ namespace SmartDebugger
             }
         }
 
-        public virtual void Clear()
+        internal virtual void Clear()
         {
             Queue.Clear();
         }

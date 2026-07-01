@@ -2,16 +2,16 @@ namespace SmartDebugger
 {
     internal class FloatQueue : IndexedQueue<float>
     {
-        public float Current { get; private set; }
-        public float Min { get; private set; }
-        public float Max { get; private set; }
-        public float Average { get; private set; }
+        internal float Current { get; private set; }
+        internal float Min { get; private set; }
+        internal float Max { get; private set; }
+        internal float Average { get; private set; }
 
-        public FloatQueue(int capacity) : base(capacity)
+        internal FloatQueue(int capacity) : base(capacity)
         {
         }
 
-        public override void Enqueue(float current)
+        internal override void Enqueue(float current)
         {
             base.Enqueue(current);
             var max = float.MinValue;
@@ -30,7 +30,7 @@ namespace SmartDebugger
             Average = sum / Count;
         }
 
-        public override void Clear()
+        internal override void Clear()
         {
             base.Clear();
             Current = Min = Max = Average = 0f;

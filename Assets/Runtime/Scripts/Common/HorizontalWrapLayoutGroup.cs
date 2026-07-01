@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace SmartDebugger
 {
-    public class HorizontalWrapLayoutGroup : LayoutGroup
+    internal class HorizontalWrapLayoutGroup : LayoutGroup
     {
         [SerializeField] private Vector2 _spacing;
 
