@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace SmartDebugger
 {
-    public class ErrorIndicator : BaseView
+    internal class ErrorIndicator : BaseView
     {
         [SerializeField] private Canvas _canvas;
         [SerializeField] private CanvasGroup _icon;
@@ -35,14 +35,14 @@ namespace SmartDebugger
             _isBlinking = false;
         }
 
-        public void Blink(string text)
+        internal void Blink(string text)
         {
-            _text.text = text;
             if (_isBlinking) return;
+            _text.text = text;
             StartCoroutine(BlinkAsync());
         }
 
-        public void Clear()
+        internal void Clear()
         {
             StopAllCoroutines();
             _isBlinking = false;
