@@ -64,6 +64,11 @@ namespace SmartDebugger
             {
                 return await _session.StopAndExportAsync();
             }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                return null;
+            }
             finally
             {
                 _session.Dispose();
