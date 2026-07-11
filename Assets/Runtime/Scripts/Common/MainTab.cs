@@ -13,13 +13,15 @@ namespace SmartDebugger
         private Transform _contentParent;
         private GameObject _content;
 
-        public bool IsOn
+        internal bool IsOn
         {
             get => _toggle.isOn;
             set => _toggle.isOn = value;
         }
+        
+        internal string Text => _text.text;
 
-        public void Bind(MainTabContent prefab, Transform contentParent)
+        internal void Bind(MainTabContent prefab, Transform contentParent)
         {
             _prefab = prefab;
             _contentParent = contentParent;
