@@ -19,17 +19,15 @@ namespace SmartDebugger
 
         private readonly List<MainTab> _mainTabs = new();
         private readonly FloatVariable _scaleFactor = new("ScaleFactor", 1f, 0.5f, 1.5f, "sd.scale_factor");
-        private readonly IntVariable _currentTab = new("CurrentTab", serializeKey: "sd.current_tab");
+        private readonly TextVariable _currentTab = new("CurrentTab", serializeKey: "sd.current_tab");
 
         protected override void Awake()
         {
             _canvasScalers.ForEach(x => x.scaleFactor = _scaleFactor.Value);
             _canvas.sortingOrder = SDSettings.Instance.CanvasSortingOrder;
             var mainTabContents = SDSettings.Instance.MainTabContents;
-            var currentTab = Mathf.Clamp(_currentTab.Value, 0, mainTabContents.Length - 1);
-            for (var i = 0; i < mainTabContents.Length; i++)
+            foreach (var prefab in mainTabContents)
             {
-                var prefab = mainTabContents[i];
                 if (prefab is BugReportTabContent && SDSettings.Instance.BugReporter == null)
                 {
                     continue;
@@ -37,11 +35,14 @@ namespace SmartDebugger
 
                 var mainTab = Instantiate(_mainTab, _mainTab.transform.parent);
                 mainTab.Bind(prefab, _contentParent);
-                mainTab.IsOn = i == currentTab;
                 _mainTabs.Add(mainTab);
             }
 
             _mainTab.gameObject.SetActive(false);
+            foreach (var mainTab in _mainTabs)
+            {
+                mainTab.IsOn = mainTab.Text == _currentTab.Value;
+            }
         }
 
         internal void Open()
@@ -99,7 +100,7 @@ namespace SmartDebugger
             if (tab.IsOn)
             {
                 tab.Show();
-                _currentTab.Value = _mainTabs.IndexOf(tab);
+                _currentTab.Value = tab.Text;
             }
             else
             {
