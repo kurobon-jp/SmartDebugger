@@ -9,6 +9,7 @@ namespace SmartDebugger
         [SerializeField] private Canvas _canvas;
         [SerializeField] private CanvasGroup _icon;
         [SerializeField] private Text _text;
+        [SerializeField] private GameObject _background;
 
         private bool _isBlinking;
 
@@ -39,12 +40,14 @@ namespace SmartDebugger
         {
             if (_isBlinking) return;
             _text.text = text;
+            _background.SetActive(true);
             StartCoroutine(BlinkAsync());
         }
 
         internal void Clear()
         {
             StopAllCoroutines();
+            _background.SetActive(false);
             _isBlinking = false;
             _text.text = "";
             _icon.alpha = 0f;
