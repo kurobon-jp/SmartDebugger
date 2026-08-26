@@ -38,10 +38,17 @@ namespace SmartDebugger
         private static void OnSceneLoaded()
         {
             if (!Application.isPlaying || SDSettings.GetInstance() is { IsAutoInitialize: false }) return;
-            Initialize(true);
+            // The auto-initialize setting has already been checked above. Force initialization here so
+            // Instance does not bypass the disabled setting while the scene-load path can still initialize.
+            InitializeInternal(true);
         }
 
-        public static void Initialize(bool force = false)
+        public static void Initialize()
+        {
+            InitializeInternal(false);
+        }
+
+        private static void InitializeInternal(bool force)
         {
             if (_instance != null) return;
             if (!SDSettings.Instance.IsAutoInitialize && !force)
