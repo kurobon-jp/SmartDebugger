@@ -37,13 +37,17 @@ namespace SmartDebugger
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void OnSceneLoaded()
         {
-            if (!Application.isPlaying || !SDSettings.Instance.IsAutoInitialize) return;
-            Initialize();
+            if (!Application.isPlaying || SDSettings.GetInstance() is { IsAutoInitialize: false }) return;
+            Initialize(true);
         }
 
-        public static void Initialize()
+        public static void Initialize(bool force = false)
         {
             if (_instance != null) return;
+            if (!SDSettings.Instance.IsAutoInitialize && !force)
+            {
+                throw new InvalidOperationException("SmartDebug is not initialized");
+            }
             var prefab = SDSettings.Instance.LoadPrefab<SmartDebug>("SmartDebug");
             _instance = Instantiate(prefab);
             if (SDSettings.Instance.IsDontDestroyOnLoad)
