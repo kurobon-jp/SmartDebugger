@@ -67,7 +67,7 @@ namespace SmartDebugger
 
         private async void SendReportAsync()
         {
-            _buttonText.text = "Sending...";
+            _buttonText.text = "Saving...";
             _sendButton.interactable = false;
             _eventSystem = EventSystem.current;
             if (_eventSystem != null)

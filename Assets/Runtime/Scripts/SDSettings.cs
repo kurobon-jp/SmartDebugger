@@ -14,12 +14,7 @@ namespace SmartDebugger
         {
             get
             {
-#if UNITY_EDITOR
-                if (_instance == null)
-                {
-                    _instance = UnityEditor.PlayerSettings.GetPreloadedAssets().OfType<SDSettings>().FirstOrDefault();
-                }
-#endif
+                GetInstance();
                 return _instance == null
                     ? throw new Exception(
                         "SDSettings is not preloaded. Please make sure it is included in Preloaded Assets.")
@@ -65,6 +60,17 @@ namespace SmartDebugger
         public MainTabContent[] MainTabContents => _mainTabContents;
         public int CanvasSortingOrder => _canvasSortingOrder;
         public BugReporter BugReporter => _bugReporter;
+
+        internal static SDSettings GetInstance()
+        {
+#if UNITY_EDITOR
+            if (_instance == null)
+            {
+                _instance = UnityEditor.PlayerSettings.GetPreloadedAssets().OfType<SDSettings>().FirstOrDefault();
+            }
+#endif
+            return _instance;
+        }
 
         public T LoadPrefab<T>(string prefabName) where T : UnityEngine.Object
         {

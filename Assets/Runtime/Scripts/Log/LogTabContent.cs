@@ -25,7 +25,8 @@ namespace SmartDebugger
         [SerializeField] private Text _message;
         [SerializeField] private Text _stackTrace;
 
-        private int _selected = -1;
+        private bool _isSelected;
+        private int _selectedIndex = -1;
         private LogReceiver _logReceiver;
         private bool _isAutoScroll;
         private bool _isDirty;
@@ -38,7 +39,16 @@ namespace SmartDebugger
         private void OnVisibleRangeChanged(Range visibleRange)
         {
             _scrollButtons.SetActive(_scrollbar.gameObject.activeSelf);
-            _isAutoScroll = visibleRange.End >= GetDataCount() - 1;
+            if (_isSelected && _selectedIndex >= visibleRange.End)
+            {
+                _listScroll.SetPositionIndex(_selectedIndex, 1f, false);
+            }
+            else
+            {
+                _isAutoScroll = visibleRange.End >= GetDataCount() - 1;
+            }
+
+            _isSelected = false;
         }
 
         protected override void OnEnable()
@@ -105,9 +115,8 @@ namespace SmartDebugger
                 UpdateCount();
             }
 
-            if (_isAutoScroll && !_listScroll.IsDragging && !_listScroll.IsScrolling)
+            if (_isAutoScroll && !_listScroll.IsDragging && !_listScroll.IsSnapping)
             {
-                
                 _listScroll.Refresh(1f, false);
             }
         }
@@ -117,7 +126,7 @@ namespace SmartDebugger
             _logReceiver.Clear();
             UpdateCount();
             _description.gameObject.SetActive(false);
-            _selected = -1;
+            _selectedIndex = -1;
             _listScroll.Refresh();
         }
 
@@ -136,10 +145,11 @@ namespace SmartDebugger
         {
             if (!go.TryGetComponent(out LogListItem listItem)) return;
             var entry = _logReceiver.FindByIndex(index);
-            var isSelected = _selected == entry.Id;
+            var isSelected = _selectedIndex == entry.Id;
             listItem.Bind(entry, isSelected, id =>
             {
-                _selected = isSelected ? -1 : id;
+                _selectedIndex = isSelected ? -1 : id;
+                _isSelected = true;
                 _isAutoScroll = false;
                 UpdateDescription();
             });
@@ -147,7 +157,7 @@ namespace SmartDebugger
 
         private void UpdateDescription()
         {
-            if (_selected < 0)
+            if (_selectedIndex < 0)
             {
                 _description.gameObject.SetActive(false);
             }
@@ -155,7 +165,7 @@ namespace SmartDebugger
             {
                 _description.gameObject.SetActive(true);
                 _description.normalizedPosition = Vector2.up;
-                var entry = _logReceiver.FindById(_selected);
+                var entry = _logReceiver.FindById(_selectedIndex);
                 _message.text = entry.Message;
                 _stackTrace.text = string.Join("\n", entry.StackTrace);
             }
@@ -176,7 +186,7 @@ namespace SmartDebugger
 
         public void OnCopy()
         {
-            var entry = _logReceiver.FindById(_selected);
+            var entry = _logReceiver.FindById(_selectedIndex);
             var text = entry.Message + "\n";
             text += string.Join("\n", entry.StackTrace);
             GUIUtility.systemCopyBuffer = text;

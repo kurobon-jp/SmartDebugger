@@ -31,7 +31,7 @@ namespace SmartDebugger
 
         private void OnFieldLayoutsChanged()
         {
-            _isFieldLayoutsChanged  = true;
+            _isFieldLayoutsChanged = true;
         }
 
         private void Update()
@@ -61,6 +61,11 @@ namespace SmartDebugger
                 {
                     CreateTab(fieldLayout);
                 }
+            }
+
+            if (_tabs.Count > 0 && _tabs.All(x => !x.Value.IsOn))
+            {
+                _tabs.First().Value.IsOn = true;
             }
 
             _tab.gameObject.SetActive(false);

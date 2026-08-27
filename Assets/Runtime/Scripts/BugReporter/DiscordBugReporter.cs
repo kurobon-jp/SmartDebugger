@@ -15,7 +15,7 @@ namespace SmartDebugger
         [SerializeField] private string _serverId;
         [SerializeField] private string _webhookUrl;
 
-        public override string SendTo => "Send to Discord";
+        public override string SendTo => "Save to Discord";
 
         public override void SendReport(string description, string report, byte[] screenshot, string videoPath,
             Action<ReportResult> onResult)

@@ -24,7 +24,7 @@ namespace SmartDebugger
         [SerializeField] private string _channelId;
         [SerializeField] private string _token;
 
-        public override string SendTo => "Send to Slack";
+        public override string SendTo => "Save to Slack";
 
         private async void SendReportAsync(string description, string report, byte[] screenshot, string videoPath,
             Action<ReportResult> onResult)

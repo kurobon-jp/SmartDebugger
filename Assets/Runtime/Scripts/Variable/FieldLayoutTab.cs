@@ -6,11 +6,18 @@ namespace SmartDebugger
     public class FieldLayoutTab : BaseView
     {
         [SerializeField] private Text _title;
+        [SerializeField] private Toggle _toggle;
         [SerializeField] private FieldLayoutTabContent _contentPrefab;
 
         private Transform _contentParent;
         private IFieldLayout _fieldLayout;
         private FieldLayoutTabContent _content;
+
+        internal bool IsOn
+        {
+            get => _toggle.isOn;
+            set => _toggle.isOn = value;
+        }
 
         public void Bind(IFieldLayout fieldLayout, Transform contentParent)
         {
