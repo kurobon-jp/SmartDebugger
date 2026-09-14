@@ -102,16 +102,17 @@ jobs:
           extract_section() {
             local heading="$1"
             awk -v heading="$heading" '
-              $0 == heading { found=1; print; next }
+              $0 == heading || index($0, heading " - ") == 1 {
+                found=1
+                print
+                next
+              }
               found && /^## / { exit }
               found { print }
             ' CHANGELOG.md
           }
 
           extract_section "## [$PACKAGE_VERSION]" > "$notes_file"
-          if [[ ! -s "$notes_file" ]]; then
-            extract_section "## [Unreleased] - $(date -u +%Y-%m-%d)" > "$notes_file"
-          fi
           if [[ ! -s "$notes_file" ]]; then
             extract_section "## [Unreleased]" > "$notes_file"
           fi
