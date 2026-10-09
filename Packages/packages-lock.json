@@ -71,21 +71,21 @@
       }
     },
     "jp.co.cyberagent.instant-replay": {
-      "version": "https://github.com/CyberAgentGameEntertainment/InstantReplay.git?path=/Packages/jp.co.cyberagent.instant-replay",
+      "version": "https://github.com/CyberAgentGameEntertainment/InstantReplay.git?path=/Packages/jp.co.cyberagent.instant-replay#v1.6.11",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "b3892bfe15caac314ae9b49913dbb9166b8c2f9e"
+      "hash": "9cc7ebc415e2f40cb347e06e331e1bf050c50bd5"
     },
     "jp.co.cyberagent.instant-replay.dependencies": {
-      "version": "https://github.com/CyberAgentGameEntertainment/InstantReplay.git?path=/Packages/jp.co.cyberagent.instant-replay.dependencies",
+      "version": "https://github.com/CyberAgentGameEntertainment/InstantReplay.git?path=/Packages/jp.co.cyberagent.instant-replay.dependencies#v1.6.11",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "org.nuget.system.io.pipelines": "9.0.3",
         "org.nuget.system.threading.channels": "9.0.2"
       },
-      "hash": "2297423de7b4b0480129bed7f32f576548d46274"
+      "hash": "9cc7ebc415e2f40cb347e06e331e1bf050c50bd5"
     },
     "org.nuget.microsoft.bcl.asyncinterfaces": {
       "version": "9.0.2",
