@@ -1,8 +1,6 @@
 name: Verify UPM consumers
 
 on:
-  push:
-    branches: ['**']
   pull_request:
   workflow_dispatch:
 
@@ -33,6 +31,10 @@ jobs:
     needs: check-license
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     strategy:
       fail-fast: false
       max-parallel: 1
