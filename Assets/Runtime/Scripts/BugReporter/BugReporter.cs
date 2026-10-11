@@ -20,6 +20,9 @@ namespace SmartDebugger
         {
         }
 
+        /// <summary>Submits the selected report data and invokes the callback when the operation terminates.</summary>
+        /// <remarks>Invoke the callback on both success and failure. UI cancellation or timeout does not
+        /// abort this operation; another UI submission is blocked until the callback arrives.</remarks>
         public abstract void SendReport(string description, string report, byte[] screenshot, string videoPath,
             Action<ReportResult> onResult);
 

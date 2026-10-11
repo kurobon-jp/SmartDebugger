@@ -68,6 +68,27 @@ namespace SmartDebugger.Tests
         }
 
         [UnityTest]
+        public IEnumerator TimeoutBlocksRetryUntilProviderCallback()
+        {
+            Action<ReportResult> callback = null;
+            var calls = 0;
+            _reporter.Send = result => { calls++; callback = result; };
+            var first = Send();
+            yield return Wait(first);
+            Assert.That(first.Exception?.GetBaseException(), Is.TypeOf<TimeoutException>());
+            var retry = Send();
+            yield return Wait(retry);
+            Assert.That(retry.Exception?.GetBaseException(), Is.TypeOf<InvalidOperationException>());
+            Assert.That(calls, Is.EqualTo(1));
+            callback(ReportResult.Failed);
+            _reporter.Send = result => { calls++; result(ReportResult.Success()); };
+            var next = Send();
+            yield return Wait(next);
+            Assert.That(next.Result.IsSuccess, Is.True);
+            Assert.That(calls, Is.EqualTo(2));
+        }
+
+        [UnityTest]
         public IEnumerator CancellationIgnoresLateCallback()
         {
             Action<ReportResult> callback = null;
@@ -76,6 +97,9 @@ namespace SmartDebugger.Tests
             var task = Send(cancellation.Token);
             cancellation.Cancel();
             yield return Wait(task);
+            var retry = Send();
+            yield return Wait(retry);
+            Assert.That(retry.Exception?.GetBaseException(), Is.TypeOf<InvalidOperationException>());
             callback(ReportResult.Success());
             Assert.That(task.IsCanceled, Is.True);
         }

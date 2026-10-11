@@ -35,9 +35,6 @@ namespace SmartDebugger
         private ProfilerRecorder _renderPipeline;
 
         private int _sampleOffset;
-#if UNITY_EDITOR
-        private int _diagnosticFrames;
-#endif
 
         internal FrameRecorder(int sampleCount = 180)
         {
@@ -97,19 +94,6 @@ namespace SmartDebugger
                 ? CpuTotalFrameTime : Time.unscaledDeltaTime * 1000f;
             CpuSamples[SampleOffset] = ComposeCpuSamples(totalTime, scriptTime, renderingTime, physicsTime);
             DeltaTimes.Enqueue(totalTime / 1000f);
-#if UNITY_EDITOR
-            // Temporary diagnosis for the reported all-Other result in 2022.1.
-            if (++_diagnosticFrames == 120)
-            {
-                Debug.Log($"[SmartDebugger CPU diagnostics] Unity {Application.unityVersion}; "
-                    + $"Scripts={scriptTime:F3}ms Rendering={renderingTime:F3}ms Physics={physicsTime:F3}ms "
-                    + $"Total={totalTime:F3}ms Main={CpuMainThreadFrameTime:F3}ms RenderThread={CpuRenderThreadFrameTime:F3}ms; "
-                    + $"Update: valid={_scriptUpdate.Valid}, count={_scriptUpdate.Count}, raw={_scriptUpdate.LastValue}; "
-                    + $"Physics: valid={_physicsProcessing.Valid}, count={_physicsProcessing.Count}, raw={_physicsProcessing.LastValue}; "
-                    + $"Camera: valid={_cameraRender.Valid}, count={_cameraRender.Count}, raw={_cameraRender.LastValue}; "
-                    + $"SRP: valid={_renderPipeline.Valid}, count={_renderPipeline.Count}, raw={_renderPipeline.LastValue}");
-            }
-#endif
         }
 
         internal static Vector4 ComposeCpuSamples(float totalTime, float scripts, float rendering, float physics)

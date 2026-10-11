@@ -114,7 +114,11 @@ namespace SmartDebugger.Tests
             yield return null;
             yield return null;
             Assert.That(_eventSystem.enabled, Is.True);
+            Assert.That(_button.interactable, Is.False, "The provider is still running.");
+            _view.SendReport();
             callback(ReportResult.Success("ignored"));
+            var deadline = DateTime.UtcNow.AddSeconds(5);
+            while (!_button.interactable && DateTime.UtcNow < deadline) yield return null;
             Assert.That(_button.interactable, Is.True);
         }
     }

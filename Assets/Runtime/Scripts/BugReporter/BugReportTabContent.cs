@@ -25,6 +25,9 @@ namespace SmartDebugger
         private bool _eventSystemWasEnabled;
         private CancellationTokenSource _sendCancellation;
 
+        private Task PendingOperation => BugReportSender.PendingSubmission(_bugReporter)
+            ?? (_bugReporter as ScreenRecordBugReporter)?.PendingExport;
+
         protected override void OnDisable()
         {
             _sendCancellation?.Cancel();
@@ -44,11 +47,16 @@ namespace SmartDebugger
             _buttonText.text = _bugReporter.SendTo;
             _openButton.gameObject.SetActive(false);
             OnValueChanged();
+            ObservePendingOperation();
         }
 
         public void OnValueChanged()
         {
-            if (_isSending) return;
+            if (_isSending || PendingOperation != null)
+            {
+                _sendButton.interactable = false;
+                return;
+            }
             _bugReporter.IncludeLogs.Value = _includeLogs.isOn;
             _bugReporter.IncludeScreenCapture.Value = _includeScreenCapture.isOn;
             _bugReporter.IncludeScreenRecord.Value = _includeScreenRecord.isOn;
@@ -62,7 +70,7 @@ namespace SmartDebugger
 
         public void SendReport()
         {
-            if (_isSending) return;
+            if (_isSending || PendingOperation != null) return;
             _isSending = true;
             _openButton.gameObject.SetActive(false);
             SendReportAsync();
@@ -89,11 +97,13 @@ namespace SmartDebugger
                 if (_includeScreenRecord.isOn && _includeScreenRecord.gameObject.activeSelf
                     && _bugReporter is ScreenRecordBugReporter screenRecordBugReporter)
                 {
-                    videoPath = await BugReportSender.WaitAsync(screenRecordBugReporter.StopRecordingAndExportAsync(),
+                    videoPath = await BugReportSender.WaitAsync(screenRecordBugReporter.ExportForReportAsync(),
                         cancellation.Token, TimeSpan.FromSeconds(30));
                 }
 
                 cancellation.Token.ThrowIfCancellationRequested();
+                // Once dispatched, attachment ownership belongs to this submission.
+                (_bugReporter as ScreenRecordBugReporter)?.ClaimExport(videoPath);
                 var result = await BugReportSender.SendAsync(_bugReporter, description, report, screenShot, videoPath,
                     cancellation.Token, TimeSpan.FromSeconds(60));
                 if (this != null && !cancellation.IsCancellationRequested) OnResult(result);
@@ -115,6 +125,25 @@ namespace SmartDebugger
                 if (_buttonText != null && _bugReporter != null) _buttonText.text = _bugReporter.SendTo;
                 if (this != null && _sendButton != null) OnValueChanged();
                 cancellation.Dispose();
+                ObservePendingOperation();
+            }
+        }
+
+        private async void ObservePendingOperation()
+        {
+            var pending = PendingOperation;
+            if (pending == null) return;
+            try
+            {
+                await pending;
+            }
+            catch (Exception exception)
+            {
+                Debug.LogException(exception);
+            }
+            finally
+            {
+                if (this != null && _sendButton != null) OnValueChanged();
             }
         }
 

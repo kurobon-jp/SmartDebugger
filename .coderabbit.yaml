@@ -1,0 +1,5 @@
+# Public API behavior is documented where useful; no blanket comment quota.
+reviews:
+  pre_merge_checks:
+    docstrings:
+      mode: "off"
