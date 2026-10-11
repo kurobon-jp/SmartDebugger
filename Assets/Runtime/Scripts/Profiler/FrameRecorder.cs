@@ -75,7 +75,7 @@ namespace SmartDebugger
 
         private static float GetMs(ProfilerRecorder recorder)
         {
-            return recorder is { Valid: true, Count: > 0 } ? (float)recorder.LastValueAsDouble / 1000000f : 0f;
+            return recorder is { Valid: true, Count: > 0 } ? recorder.LastValue / 1000000f : 0f;
         }
 
         public void Dispose()

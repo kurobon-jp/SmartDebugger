@@ -26,6 +26,7 @@ namespace SmartDebugger
         [SerializeField] private bool _dontDestroyOnLoad = true;
         [SerializeField] private bool _autoGenerateEventSystem = true;
         [SerializeField] private bool _showErrorIndicator = true;
+        [SerializeField, Min(1)] private int _maxLogEntries = 1000;
 
         [SerializeField] private KeyShortcut _openShortcut = new()
         {
@@ -54,6 +55,7 @@ namespace SmartDebugger
         public bool IsDontDestroyOnLoad => _dontDestroyOnLoad;
         public bool IsAutoGenerateEventSystem => _autoGenerateEventSystem;
         public bool IsShowErrorIndicator => _showErrorIndicator;
+        public int MaxLogEntries => Math.Max(1, _maxLogEntries);
         public KeyShortcut OpenShortcut => _openShortcut;
         public KeyShortcut CloseShortcut => _closeShortcut;
         public TapEvent OpenTapEvent => _openTapEvent;

@@ -1,8 +1,7 @@
-#if ENABLE_INSTANTREPLAY && !EXCLUDE_INSTANTREPLAY
-#define USE_INSTANTREPLAY
-#endif
+using System;
 using System.Collections;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -23,6 +22,15 @@ namespace SmartDebugger
         private BugReporter _bugReporter;
         private EventSystem _eventSystem;
         private bool _isSending;
+        private bool _eventSystemWasEnabled;
+        private CancellationTokenSource _sendCancellation;
+
+        protected override void OnDisable()
+        {
+            _sendCancellation?.Cancel();
+            RestoreEventSystem();
+            base.OnDisable();
+        }
 
         protected override void OnEnable()
         {
@@ -30,12 +38,9 @@ namespace SmartDebugger
             _bugReporter = SDSettings.Instance.BugReporter;
             _includeLogs.SetIsOnWithoutNotify(_bugReporter.IncludeLogs);
             _includeScreenCapture.SetIsOnWithoutNotify(_bugReporter.IncludeScreenCapture);
-#if USE_INSTANTREPLAY
-            _includeScreenRecord.gameObject.SetActive(_bugReporter is ScreenRecordBugReporter);
+            _includeScreenRecord.gameObject.SetActive(
+                _bugReporter is ScreenRecordBugReporter { IsScreenRecordingAvailable: true });
             _includeScreenRecord.SetIsOnWithoutNotify(_bugReporter.IncludeScreenRecord);
-#else
-            _includeScreenRecord.gameObject.SetActive(false);
-#endif
             _buttonText.text = _bugReporter.SendTo;
             _openButton.gameObject.SetActive(false);
             OnValueChanged();
@@ -51,9 +56,7 @@ namespace SmartDebugger
                 !string.IsNullOrEmpty(_description.text)
                 || (_includeLogs.isOn && _includeLogs.gameObject.activeSelf)
                 || (_includeScreenCapture.isOn && _includeScreenCapture.gameObject.activeSelf)
-#if USE_INSTANTREPLAY
                 || (_includeScreenRecord.isOn && _includeScreenRecord.gameObject.activeSelf)
-#endif
                 ;
         }
 
@@ -67,50 +70,90 @@ namespace SmartDebugger
 
         private async void SendReportAsync()
         {
-            _buttonText.text = "Saving...";
-            _sendButton.interactable = false;
-            _eventSystem = EventSystem.current;
-            if (_eventSystem != null)
-                _eventSystem.enabled = false;
+            var cancellation = _sendCancellation = new CancellationTokenSource();
+            try
+            {
+                _buttonText.text = "Saving...";
+                _sendButton.interactable = false;
+                _eventSystem = EventSystem.current;
+                _eventSystemWasEnabled = _eventSystem != null && _eventSystem.enabled;
+                if (_eventSystem != null) _eventSystem.enabled = false;
 
-            var description = _description.text;
-            var report = "";
-            byte[] screenShot = null;
-            string videoPath = null;
-            if (_includeLogs.isOn)
-            {
-                report = CreateReport(description);
-            }
+                var description = _description.text;
+                var report = "";
+                byte[] screenShot = null;
+                string videoPath = null;
+                if (_includeLogs.isOn) report = CreateReport(description);
+                if (_includeScreenCapture.isOn)
+                    screenShot = await TakeScreenShotAsync(cancellation.Token);
+                if (_includeScreenRecord.isOn && _includeScreenRecord.gameObject.activeSelf
+                    && _bugReporter is ScreenRecordBugReporter screenRecordBugReporter)
+                {
+                    videoPath = await BugReportSender.WaitAsync(screenRecordBugReporter.StopRecordingAndExportAsync(),
+                        cancellation.Token, TimeSpan.FromSeconds(30));
+                }
 
-            if (_includeScreenCapture.isOn)
-            {
-                screenShot = await TakeScreenShotAsync();
+                cancellation.Token.ThrowIfCancellationRequested();
+                var result = await BugReportSender.SendAsync(_bugReporter, description, report, screenShot, videoPath,
+                    cancellation.Token, TimeSpan.FromSeconds(60));
+                if (this != null && !cancellation.IsCancellationRequested) OnResult(result);
             }
-#if USE_INSTANTREPLAY
-            if (_includeScreenRecord.isOn && _bugReporter is ScreenRecordBugReporter screenRecordBugReporter)
+            catch (OperationCanceledException)
             {
-                videoPath = await screenRecordBugReporter.StopRecordingAndExportAsync();
+                // Closing the tab cancels the UI wait; late reporter callbacks are ignored.
             }
-#endif
-            _bugReporter.SendReport(description, report, screenShot, videoPath, OnResult);
+            catch (Exception exception)
+            {
+                Debug.LogException(exception);
+                if (this != null) OnResult(ReportResult.Failed);
+            }
+            finally
+            {
+                RestoreEventSystem();
+                _isSending = false;
+                _sendCancellation = null;
+                if (_buttonText != null && _bugReporter != null) _buttonText.text = _bugReporter.SendTo;
+                if (this != null && _sendButton != null) OnValueChanged();
+                cancellation.Dispose();
+            }
         }
 
-        private async Task<byte[]> TakeScreenShotAsync()
+        private async Task<byte[]> TakeScreenShotAsync(CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<byte[]>();
-            StartCoroutine(TakeScreenShotCoroutine(tcs));
-            return await tcs.Task;
+            var debugger = SmartDebug.Instance;
+            var coroutine = StartCoroutine(TakeScreenShotCoroutine(tcs, debugger));
+            using var registration = cancellationToken.Register(() => tcs.TrySetCanceled());
+            try
+            {
+                return await BugReportSender.WaitAsync(tcs.Task, cancellationToken, TimeSpan.FromSeconds(10));
+            }
+            finally
+            {
+                if (this != null) StopCoroutine(coroutine);
+                if (debugger != null) debugger.ShowCanvas();
+            }
         }
 
-        private static IEnumerator TakeScreenShotCoroutine(TaskCompletionSource<byte[]> tcs)
+        private static IEnumerator TakeScreenShotCoroutine(TaskCompletionSource<byte[]> tcs, SmartDebug debugger)
         {
-            SmartDebug.Instance.HideCanvas();
+            debugger.HideCanvas();
             yield return new WaitForEndOfFrame();
-            var tex = ScreenCapture.CaptureScreenshotAsTexture();
-            SmartDebug.Instance.ShowCanvas();
-            var screenShot = tex.EncodeToPNG();
-            Destroy(tex);
-            tcs.SetResult(screenShot);
+            Texture2D tex = null;
+            try
+            {
+                tex = ScreenCapture.CaptureScreenshotAsTexture();
+                tcs.TrySetResult(tex.EncodeToPNG());
+            }
+            catch (Exception exception)
+            {
+                tcs.TrySetException(exception);
+            }
+            finally
+            {
+                if (tex != null) Destroy(tex);
+                if (debugger != null) debugger.ShowCanvas();
+            }
         }
 
         private string CreateReport(string description)
@@ -148,9 +191,6 @@ namespace SmartDebugger
 
         private void OnResult(ReportResult result)
         {
-            _isSending = false;
-            _buttonText.text = _bugReporter.SendTo;
-            _sendButton.interactable = true;
             if (result.IsSuccess && result.ReportUrls is { Length: > 0 })
             {
                 _openButton.gameObject.SetActive(true);
@@ -168,8 +208,12 @@ namespace SmartDebugger
                 _openButton.gameObject.SetActive(false);
             }
 
-            if (_eventSystem != null)
-                _eventSystem.enabled = true;
+        }
+
+        private void RestoreEventSystem()
+        {
+            if (_eventSystem != null) _eventSystem.enabled = _eventSystemWasEnabled;
+            _eventSystem = null;
         }
     }
 }

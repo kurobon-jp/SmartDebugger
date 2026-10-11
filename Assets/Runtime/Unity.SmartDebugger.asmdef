@@ -2,11 +2,8 @@
     "name": "Unity.SmartDebugger",
     "rootNamespace": "SmartDebugger",
     "references": [
-        "Unity.InputSystem",
         "Unity.SimpleScroll",
-        "InstantReplay",
-        "UniEnc",
-        "UniEnc.Unity"
+        "UnityEngine.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -17,12 +14,6 @@
     "defineConstraints": [
         "!DISABLE_SMART_DEBUG"
     ],
-    "versionDefines": [
-        {
-            "name": "jp.co.cyberagent.instant-replay",
-            "expression": "",
-            "define": "ENABLE_INSTANTREPLAY"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }

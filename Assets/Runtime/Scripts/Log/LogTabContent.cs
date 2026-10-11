@@ -73,6 +73,11 @@ namespace SmartDebugger
         private void OnLogAdded(LogEntry _)
         {
             _isDirty = true;
+            if (_selectedIndex >= 0 && !_logReceiver.Entries.ContainsKey(_selectedIndex))
+            {
+                _selectedIndex = -1;
+                _description.gameObject.SetActive(false);
+            }
         }
 
         private void UpdateCount()
@@ -113,6 +118,7 @@ namespace SmartDebugger
             {
                 _isDirty = false;
                 UpdateCount();
+                if (!_isAutoScroll) _listScroll.Refresh();
             }
 
             if (_isAutoScroll && !_listScroll.IsDragging && !_listScroll.IsSnapping)
@@ -157,7 +163,7 @@ namespace SmartDebugger
 
         private void UpdateDescription()
         {
-            if (_selectedIndex < 0)
+            if (_selectedIndex < 0 || !_logReceiver.Entries.ContainsKey(_selectedIndex))
             {
                 _description.gameObject.SetActive(false);
             }
@@ -186,7 +192,7 @@ namespace SmartDebugger
 
         public void OnCopy()
         {
-            var entry = _logReceiver.FindById(_selectedIndex);
+            if (!_logReceiver.Entries.TryGetValue(_selectedIndex, out var entry)) return;
             var text = entry.Message + "\n";
             text += string.Join("\n", entry.StackTrace);
             GUIUtility.systemCopyBuffer = text;

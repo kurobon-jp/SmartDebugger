@@ -1,0 +1,8 @@
+{
+    "name": "Unity.SmartDebugger.InstantReplay",
+    "references": ["Unity.SmartDebugger", "InstantReplay", "UniEnc", "UniEnc.Unity"],
+    "defineConstraints": ["!DISABLE_SMART_DEBUG", "UNITY_2022_3_OR_NEWER", "ENABLE_INSTANTREPLAY", "!EXCLUDE_INSTANTREPLAY"],
+    "versionDefines": [
+        {"name": "jp.co.cyberagent.instant-replay", "expression": "1.6.11", "define": "ENABLE_INSTANTREPLAY"}
+    ]
+}

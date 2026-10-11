@@ -1,4 +1,3 @@
-#if ENABLE_INSTANTREPLAY && !EXCLUDE_INSTANTREPLAY
 using System;
 using UnityEngine;
 
@@ -47,4 +46,3 @@ namespace SmartDebugger
         public uint MaxMemoryUsageBytesForCompressedFrames => _maxMemoryUsageBytesForCompressedFrames;
     }
 }
-#endif

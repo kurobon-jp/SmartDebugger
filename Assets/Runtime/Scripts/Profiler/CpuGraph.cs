@@ -33,7 +33,7 @@ namespace SmartDebugger
             {
 #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
                 _targetFrameRate = 30f;
-#elif UNITY_2021_2_OR_NEWER
+#elif UNITY_2022_2_OR_NEWER
                 _targetFrameRate = (float)Screen.currentResolution.refreshRateRatio.value;
 #else
                 _targetFrameRate = (float)Screen.currentResolution.refreshRate;

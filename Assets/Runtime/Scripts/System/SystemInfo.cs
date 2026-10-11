@@ -18,6 +18,7 @@ namespace SmartDebugger
             AddBatteryInfo(300);
             AddPlatformSpecificInfo(400);
             AddAppInfo(500);
+            AddRenderingInfo(600);
         }
 
         public static IReadOnlyDictionary<string, string> GetSystemInfoText()
@@ -83,6 +84,7 @@ namespace SmartDebugger
                 $"Graphics Device: {UnityEngine.SystemInfo.graphicsDeviceName}\n" +
                 $"Graphics Vendor: {UnityEngine.SystemInfo.graphicsDeviceVendor}\n" +
                 $"Graphics API: {UnityEngine.SystemInfo.graphicsDeviceType}\n" +
+                $"Graphics API / Driver Version: {UnityEngine.SystemInfo.graphicsDeviceVersion}\n" +
                 $"Max Texture Size: {UnityEngine.SystemInfo.maxTextureSize}\n" +
                 $"Supports Instancing: {UnityEngine.SystemInfo.supportsInstancing}\n" +
                 $"Supports Compute Shaders: {UnityEngine.SystemInfo.supportsComputeShaders}"
@@ -94,14 +96,23 @@ namespace SmartDebugger
         // ================================
         private static void AddDisplayInfo(int sortOrder)
         {
-            var res = Screen.currentResolution;
             AddSystemInfoText(sortOrder, "Display Info", () =>
-                $"Resolution: {res.width} x {res.height}\n" +
-                $"Refresh Rate: {res.refreshRateRatio.value} Hz\n" +
-                $"DPI: {Screen.dpi}\n" +
-                $"Fullscreen Mode: {Screen.fullScreenMode}\n" +
-                $"Orientation: {Screen.orientation}"
-            );
+            {
+                var res = Screen.currentResolution;
+                var safeArea = Screen.safeArea;
+#if UNITY_2022_2_OR_NEWER
+                var refreshRate = res.refreshRateRatio.value;
+#else
+                var refreshRate = res.refreshRate;
+#endif
+                return $"Display Resolution: {res.width} x {res.height}\n" +
+                    $"Application Resolution: {Screen.width} x {Screen.height}\n" +
+                    $"Safe Area: x={safeArea.x}, y={safeArea.y}, width={safeArea.width}, height={safeArea.height}\n" +
+                    $"Refresh Rate: {refreshRate} Hz\n" +
+                    $"DPI: {Screen.dpi}\n" +
+                    $"Fullscreen Mode: {Screen.fullScreenMode}\n" +
+                    $"Orientation: {Screen.orientation}";
+            });
         }
 
         // ================================
@@ -203,10 +214,47 @@ namespace SmartDebugger
         // ================================
         private static void AddAppInfo(int sortOrder)
         {
-            AddSystemInfoText(sortOrder, "App Version", () =>
+            AddSystemInfoText(sortOrder++, "App Version", () =>
                 $"App Version: {Application.version}\n" +
                 $"App Identifier: {Application.identifier}\n" +
-                $"Unity Version: {Application.unityVersion}"
+                $"Unity Version: {Application.unityVersion}\n" +
+                $"Build GUID: {Application.buildGUID}\n" +
+                $"Development Build: {Debug.isDebugBuild}\n" +
+#if UNITY_EDITOR
+                "Scripting Backend: Editor (Mono)"
+#elif ENABLE_IL2CPP
+                "Scripting Backend: IL2CPP"
+#elif ENABLE_MONO
+                "Scripting Backend: Mono"
+#else
+                "Scripting Backend: Unknown"
+#endif
+            );
+
+            AddSystemInfoText(sortOrder, "Runtime State", () =>
+                $"System Language: {Application.systemLanguage}\n" +
+                $"Uptime: {Time.realtimeSinceStartupAsDouble:F1} seconds\n" +
+                $"Time Scale: {Time.timeScale}"
+            );
+        }
+
+        private static void AddRenderingInfo(int sortOrder)
+        {
+            AddSystemInfoText(sortOrder++, "Rendering Settings", () =>
+            {
+                var quality = QualitySettings.GetQualityLevel();
+                var names = QualitySettings.names;
+                var qualityName = quality >= 0 && quality < names.Length ? names[quality] : "Unknown";
+                var pipeline = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline;
+                var pipelineName = pipeline != null ? $"{pipeline.name} ({pipeline.GetType().Name})" : "Built-in";
+                return $"Quality Level: {qualityName} ({quality})\n" +
+                    $"Render Pipeline: {pipelineName}\n" +
+                    $"Color Space: {QualitySettings.activeColorSpace}";
+            });
+
+            AddSystemInfoText(sortOrder, "Frame Rate Settings", () =>
+                $"Target Frame Rate: {Application.targetFrameRate}\n" +
+                $"VSync Count: {QualitySettings.vSyncCount}"
             );
         }
     }

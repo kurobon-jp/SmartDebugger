@@ -5,13 +5,15 @@ namespace SmartDebugger
 {
     public abstract class ScreenRecordBugReporter : BugReporter
     {
-#if ENABLE_INSTANTREPLAY && !EXCLUDE_INSTANTREPLAY
-        private ScreenRecorder _screenRecorder;
+        private IScreenRecorder _screenRecorder;
+
+        public bool IsScreenRecordingAvailable => ScreenRecording.Create != null;
 
         [SerializeField] private ScreenRecordOptions _screenRecordOptions = new();
 
         internal override void Initialize()
         {
+            IncludeScreenRecord.OnValueChanged -= OnIncludeScreenRecordChanged;
             IncludeScreenRecord.OnValueChanged += OnIncludeScreenRecordChanged;
             if (IncludeScreenRecord)
             {
@@ -22,6 +24,7 @@ namespace SmartDebugger
         private void OnDisable()
         {
             IncludeScreenRecord.OnValueChanged -= OnIncludeScreenRecordChanged;
+            StopRecording();
         }
 
         private void OnIncludeScreenRecordChanged(SerializeVariable<bool> variable)
@@ -39,7 +42,7 @@ namespace SmartDebugger
         private void StartRecording()
         {
             StopRecording();
-            _screenRecorder = new ScreenRecorder(_screenRecordOptions);
+            _screenRecorder = ScreenRecording.Create?.Invoke(_screenRecordOptions);
         }
 
         private void StopRecording()
@@ -63,6 +66,5 @@ namespace SmartDebugger
                 }
             }
         }
-#endif
     }
 }

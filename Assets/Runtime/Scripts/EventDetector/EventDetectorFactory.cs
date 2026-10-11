@@ -1,23 +1,26 @@
+using System;
+using UnityEngine;
+
 namespace SmartDebugger
 {
     internal static class EventDetectorFactory
     {
+        internal static Func<KeyShortcut, IEventDetector> KeyDetectorFactory;
+        internal static Func<TapEvent, IEventDetector> TapDetectorFactory;
+        internal static Action<GameObject> AddInputModule;
+
         public static IEventDetector CreateKeyEventDetector(KeyShortcut shortcut)
         {
-#if ENABLE_INPUT_SYSTEM
-            return new InputSystemKeyEventDetector(shortcut);
-#else
-            return new LegacyKeyEventDetector(shortcut);
-#endif
+            return KeyDetectorFactory != null
+                ? KeyDetectorFactory(shortcut)
+                : new LegacyKeyEventDetector(shortcut);
         }
 
         public static IEventDetector CreateMultiTapEventDetector(TapEvent tapEvent)
         {
-#if ENABLE_INPUT_SYSTEM
-            return new InputSystemMultiTapEventDetector(tapEvent);
-#else
-            return new LegacyMultiTapEventDetector(tapEvent);
-#endif
+            return TapDetectorFactory != null
+                ? TapDetectorFactory(tapEvent)
+                : new LegacyMultiTapEventDetector(tapEvent);
         }
     }
 }

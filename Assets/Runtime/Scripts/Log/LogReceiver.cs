@@ -4,10 +4,15 @@ using UnityEngine;
 
 namespace SmartDebugger
 {
-    public class LogReceiver
+    public class LogReceiver : IDisposable
     {
-        private readonly List<LogEntry> _queue = new();
+        private readonly object _queueLock = new();
+        private Queue<LogEntry> _queue = new();
+        private Queue<LogEntry> _processing = new();
+        private readonly Queue<LogEntry> _retained = new();
         private readonly List<LogEntry> _filtered = new();
+        private readonly int _maxEntries;
+        private bool _disposed;
         private int _ids;
         private LogTypes _filterTypes;
 
@@ -25,31 +30,38 @@ namespace SmartDebugger
 
         internal event Action<LogEntry> OnAdded;
 
-        internal LogReceiver()
+        internal LogReceiver(int maxEntries = 1000)
         {
+            if (maxEntries < 1) throw new ArgumentOutOfRangeException(nameof(maxEntries));
+            _maxEntries = maxEntries;
             Application.logMessageReceivedThreaded += OnLogMessageReceived;
         }
 
         private void OnLogMessageReceived(string condition, string stackTrace, LogType type)
         {
-            lock (_queue)
+            lock (_queueLock)
             {
-                _queue.Add(new LogEntry(_ids++, condition, stackTrace, type));
+                if (_disposed) return;
+                if (_queue.Count >= _maxEntries) _queue.Dequeue();
+                _queue.Enqueue(new LogEntry(_ids++, condition, stackTrace, type));
             }
         }
 
         public void Update()
         {
-            lock (_queue)
+            lock (_queueLock)
             {
-                if (_queue.Count == 0) return;
-                foreach (var entry in _queue)
-                {
-                    AddEntry(entry);
-                    OnAdded?.Invoke(entry);
-                }
+                if (_disposed || _queue.Count == 0) return;
+                (_queue, _processing) = (_processing, _queue);
+            }
 
-                _queue.Clear();
+            // Invoke subscribers outside the lock so logging from them cannot
+            // modify the batch being drained or block worker-thread logging.
+            while (_processing.Count > 0 && !_disposed)
+            {
+                var entry = _processing.Dequeue();
+                AddEntry(entry);
+                OnAdded?.Invoke(entry);
             }
         }
 
@@ -65,21 +77,34 @@ namespace SmartDebugger
 
         private void AddEntry(LogEntry entry)
         {
-            Entries.Add(entry.Id, entry);
-            switch (entry.Types)
+            if (_retained.Count >= _maxEntries)
             {
-                case LogTypes.Info:
-                    InfoCount++;
-                    break;
-                case LogTypes.Warning:
-                    WarnCount++;
-                    break;
-                case LogTypes.Error:
-                    ErrorCount++;
-                    break;
+                var oldest = _retained.Dequeue();
+                Entries.Remove(oldest.Id);
+                if (_filtered.Count > 0 && _filtered[0].Id == oldest.Id) _filtered.RemoveAt(0);
+                UpdateTypeCount(oldest.Types, -1);
             }
 
+            _retained.Enqueue(entry);
+            Entries.Add(entry.Id, entry);
+            UpdateTypeCount(entry.Types, 1);
             ApplyFilter(entry);
+        }
+
+        private void UpdateTypeCount(LogTypes type, int change)
+        {
+            switch (type)
+            {
+                case LogTypes.Info:
+                    InfoCount += change;
+                    break;
+                case LogTypes.Warning:
+                    WarnCount += change;
+                    break;
+                case LogTypes.Error:
+                    ErrorCount += change;
+                    break;
+            }
         }
 
         private void ApplyFilter(LogEntry entry)
@@ -94,6 +119,12 @@ namespace SmartDebugger
 
         public void Clear()
         {
+            lock (_queueLock)
+            {
+                _queue.Clear();
+            }
+            _processing.Clear();
+            _retained.Clear();
             _filtered.Clear();
             Entries.Clear();
             InfoCount = 0;
@@ -107,10 +138,24 @@ namespace SmartDebugger
             _filtered.Clear();
             _filterTypes = types;
             FilterText = text;
-            foreach (var entry in Entries.Values)
+            foreach (var entry in _retained)
             {
                 ApplyFilter(entry);
             }
+        }
+
+        public void Dispose()
+        {
+            lock (_queueLock)
+            {
+                if (_disposed) return;
+                _disposed = true;
+                Application.logMessageReceivedThreaded -= OnLogMessageReceived;
+                _queue.Clear();
+            }
+
+            Clear();
+            OnAdded = null;
         }
     }
 }
