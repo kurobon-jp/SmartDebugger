@@ -244,7 +244,7 @@ unity test .utmp/consumer --mode EditMode --output Logs/consumer-results.xml
 
 Use an installed Editor version. The generator refuses to overwrite an existing project. Available variants are `minimal`, `input-system`, `recording`, and `disabled`; `disabled` includes optional dependencies and verifies that all debugger runtime assemblies are excluded.
 
-The [CI workflow](.github/workflows/test.yml) defines consumer checks for Unity 2022.1 (core/input), Unity 2022.3, and Unity 6. Configure `UNITY_LICENSE`, `UNITY_EMAIL`, and `UNITY_PASSWORD` repository secrets for the GameCI runner. Workflow configuration is not evidence that each version has passed; check the run results.
+Run consumer checks locally for each Unity version and configuration you want to support. Automated test CI is not configured in this repository.
 
 ## License
 

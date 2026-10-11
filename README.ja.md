@@ -244,7 +244,7 @@ unity test .utmp/consumer --mode EditMode --output Logs/consumer-results.xml
 
 インストール済みのEditorバージョンを指定してください。生成ツールは既存のプロジェクトを上書きしません。検証構成は`minimal`、`input-system`、`recording`、`disabled`です。`disabled`は任意の依存パッケージも含め、デバッガーのランタイムアセンブリがすべて除外されることを検証します。
 
-[CIワークフロー](.github/workflows/test.yml)には、Unity 2022.1（コア・入力連携）、Unity 2022.3、Unity 6での利用側プロジェクトの検証を定義しています。GameCIの実行には、リポジトリのSecretsに`UNITY_LICENSE`、`UNITY_EMAIL`、`UNITY_PASSWORD`を設定します。ワークフローの定義だけでは各バージョンの成功を保証しないため、実行結果を確認してください。
+対応するUnityバージョンと構成ごとに、利用側プロジェクトの検証をローカルで実行してください。このリポジトリでは自動テストCIを設定していません。
 
 ## ライセンス
 
