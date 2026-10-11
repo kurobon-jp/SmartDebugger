@@ -27,8 +27,17 @@ namespace SmartDebugger
         private ProfilerRecorder _gpuFrameTime;
         private ProfilerRecorder _physics2DSimulate;
         private ProfilerRecorder _physicsProcessing;
+        private ProfilerRecorder _scriptUpdate;
+        private ProfilerRecorder _scriptFixedUpdate;
+        private ProfilerRecorder _scriptLateUpdate;
+        private ProfilerRecorder _scriptDelayedTasks;
+        private ProfilerRecorder _cameraRender;
+        private ProfilerRecorder _renderPipeline;
 
         private int _sampleOffset;
+#if UNITY_EDITOR
+        private int _diagnosticFrames;
+#endif
 
         internal FrameRecorder(int sampleCount = 180)
         {
@@ -43,8 +52,23 @@ namespace SmartDebugger
             _cpuRenderThreadFrameTime =
                 ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Render Thread Frame Time");
             _gpuFrameTime = ProfilerRecorder.StartNew(ProfilerCategory.Render, "GPU Frame Time");
-            _physicsProcessing = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "FixedUpdate.PhysicsFixedUpdate");
-            _physics2DSimulate = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "Physics2D.Simulate");
+            _physicsProcessing = RecordMainThread("FixedUpdate.PhysicsFixedUpdate");
+            _physics2DSimulate = RecordMainThread("FixedUpdate.Physics2DFixedUpdate");
+            _scriptUpdate = RecordMainThread("Update.ScriptRunBehaviourUpdate");
+            _scriptFixedUpdate = RecordMainThread("FixedUpdate.ScriptRunBehaviourFixedUpdate");
+            _scriptLateUpdate = RecordMainThread("PreLateUpdate.ScriptRunBehaviourLateUpdate");
+            _scriptDelayedTasks = RecordMainThread("Update.ScriptRunDelayedTasks");
+            _cameraRender = RecordMainThread("Camera.Render");
+            _renderPipeline = RecordMainThread("RenderPipelineManager.DoRenderLoop_Internal");
+        }
+
+        private static ProfilerRecorder RecordMainThread(string marker)
+        {
+            // Match by name regardless of the category assigned by the Editor version.
+            // Sum repeated FixedUpdates/cameras, but exclude render/worker threads.
+            return new ProfilerRecorder(marker, 1, ProfilerRecorderOptions.Default
+                | ProfilerRecorderOptions.StartImmediately
+                | ProfilerRecorderOptions.CollectOnlyOnCurrentThread);
         }
 
         internal void Sample()
@@ -63,16 +87,39 @@ namespace SmartDebugger
             GpuFrameTime = GetMs(_gpuFrameTime);
             var physicsTime = GetMs(_physicsProcessing);
             physicsTime += GetMs(_physics2DSimulate);
-            // CPU Main Thread Frame Time already includes physics. Keep the
-            // categories non-negative and avoid subtracting render-thread time
-            // from main-thread time: they are measured on different threads.
-            var scriptTime = Mathf.Max(0, CpuMainThreadFrameTime - physicsTime);
-            var otherTime = Mathf.Max(0,
-                CpuTotalFrameTime - scriptTime - physicsTime - CpuRenderThreadFrameTime);
-            CpuSamples[SampleOffset] = new Vector4(scriptTime,
-                CpuRenderThreadFrameTime,
-                physicsTime, otherTime);
-            DeltaTimes.Enqueue(CpuTotalFrameTime / 1000f);
+            var scriptTime = GetMs(_scriptUpdate) + GetMs(_scriptFixedUpdate)
+                + GetMs(_scriptLateUpdate) + GetMs(_scriptDelayedTasks);
+            // The SRP loop can contain Camera.Render: select the outer loop rather
+            // than adding both. Thread frame counters are not category timings.
+            var renderingTime = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline != null
+                ? GetMs(_renderPipeline) : GetMs(_cameraRender);
+            var totalTime = CpuTotalFrameTime > 0f
+                ? CpuTotalFrameTime : Time.unscaledDeltaTime * 1000f;
+            CpuSamples[SampleOffset] = ComposeCpuSamples(totalTime, scriptTime, renderingTime, physicsTime);
+            DeltaTimes.Enqueue(totalTime / 1000f);
+#if UNITY_EDITOR
+            // Temporary diagnosis for the reported all-Other result in 2022.1.
+            if (++_diagnosticFrames == 120)
+            {
+                Debug.Log($"[SmartDebugger CPU diagnostics] Unity {Application.unityVersion}; "
+                    + $"Scripts={scriptTime:F3}ms Rendering={renderingTime:F3}ms Physics={physicsTime:F3}ms "
+                    + $"Total={totalTime:F3}ms Main={CpuMainThreadFrameTime:F3}ms RenderThread={CpuRenderThreadFrameTime:F3}ms; "
+                    + $"Update: valid={_scriptUpdate.Valid}, count={_scriptUpdate.Count}, raw={_scriptUpdate.LastValue}; "
+                    + $"Physics: valid={_physicsProcessing.Valid}, count={_physicsProcessing.Count}, raw={_physicsProcessing.LastValue}; "
+                    + $"Camera: valid={_cameraRender.Valid}, count={_cameraRender.Count}, raw={_cameraRender.LastValue}; "
+                    + $"SRP: valid={_renderPipeline.Valid}, count={_renderPipeline.Count}, raw={_renderPipeline.LastValue}");
+            }
+#endif
+        }
+
+        internal static Vector4 ComposeCpuSamples(float totalTime, float scripts, float rendering, float physics)
+        {
+            scripts = Mathf.Max(0f, scripts);
+            rendering = Mathf.Max(0f, rendering);
+            physics = Mathf.Max(0f, physics);
+            // Other includes unclassified main-thread work, idle time and waits.
+            return new Vector4(scripts, rendering, physics,
+                Mathf.Max(0f, totalTime - scripts - rendering - physics));
         }
 
         private void SampleMemory()
@@ -103,6 +150,12 @@ namespace SmartDebugger
             _gpuFrameTime.Dispose();
             _physics2DSimulate.Dispose();
             _physicsProcessing.Dispose();
+            _scriptUpdate.Dispose();
+            _scriptFixedUpdate.Dispose();
+            _scriptLateUpdate.Dispose();
+            _scriptDelayedTasks.Dispose();
+            _cameraRender.Dispose();
+            _renderPipeline.Dispose();
         }
     }
 }
