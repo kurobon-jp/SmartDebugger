@@ -36,7 +36,7 @@ Shader "SmartDebug/CpuGraph"
             // C#から渡すデータ
             uniform int _SampleCount;
             uniform int _SampleOffset;
-            uniform float4 _Samples[256]; // x:Main, y:Render, z:GPU, w:Margin
+            uniform float4 _Samples[256]; // x:Scripts, y:Render, z:Physics, w:Other
             uniform float _MaxTime; // グラフの縦軸の最大値 (ミリ秒)
             uniform float _TargetTime; // ターゲット横線の位置 (ミリ秒)
             fixed4 _LineColor;

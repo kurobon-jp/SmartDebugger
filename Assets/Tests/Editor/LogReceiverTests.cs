@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
@@ -60,6 +61,60 @@ namespace SmartDebugger.Tests
             Assert.That(_receiver.Count, Is.EqualTo(1));
             _receiver.Update();
             Assert.That(_receiver.Count, Is.EqualTo(2));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void SubscriberExceptionPreservesPendingBatchOrder(bool receiveNewLog)
+        {
+            var received = new System.Collections.Generic.List<string>();
+            _receiver.OnAdded += entry =>
+            {
+                received.Add(entry.Message);
+                if (entry.Message == "first") throw new InvalidOperationException("subscriber failure");
+            };
+            Log("first");
+            Log("second");
+            Assert.Throws<InvalidOperationException>(() => _receiver.Update());
+            if (receiveNewLog) Log("third");
+
+            _receiver.Update();
+            Assert.That(received, Is.EqualTo(new[] { "first", "second" }));
+            if (receiveNewLog)
+            {
+                _receiver.Update();
+                Assert.That(received, Is.EqualTo(new[] { "first", "second", "third" }));
+            }
+            Assert.That(_receiver.FindByIndex(0).Message, Is.EqualTo("first"));
+            Assert.That(_receiver.FindByIndex(1).Message, Is.EqualTo("second"));
+        }
+
+        [Test]
+        public void SubscriberExceptionPreservesEvictionFiltersAndCounters()
+        {
+            _receiver.Filter(LogTypes.Info, "keep");
+            _receiver.OnAdded += entry =>
+            {
+                if (entry.Message == "first") throw new InvalidOperationException("subscriber failure");
+            };
+            Log("first");
+            Log("keep warning", LogType.Warning);
+            Log("keep error", LogType.Error);
+            Assert.Throws<InvalidOperationException>(() => _receiver.Update());
+            Log("new info");
+            _receiver.Update();
+            _receiver.Update();
+
+            Assert.That(_receiver.Entries.ContainsKey(0), Is.False);
+            Assert.That(_receiver.Entries.Count, Is.EqualTo(3));
+            Assert.That(_receiver.InfoCount, Is.EqualTo(1));
+            Assert.That(_receiver.WarnCount, Is.EqualTo(1));
+            Assert.That(_receiver.ErrorCount, Is.EqualTo(1));
+            Assert.That(_receiver.Count, Is.EqualTo(2));
+            Assert.That(_receiver.FindByIndex(0).Message, Is.EqualTo("keep warning"));
+            Assert.That(_receiver.FindByIndex(1).Message, Is.EqualTo("keep error"));
+            _receiver.Filter(LogTypes.None, "");
+            Assert.That(_receiver.FindByIndex(2).Message, Is.EqualTo("new info"));
         }
 
         [Test]
