@@ -109,9 +109,10 @@ namespace SmartDebugger
 
         private void ApplyFilter(LogEntry entry)
         {
-            if ((_filterTypes & entry.Types) == 0 &&
-                (string.IsNullOrEmpty(FilterText) ||
-                 entry.Message.Contains(FilterText, StringComparison.OrdinalIgnoreCase)))
+            var matchesType = (_filterTypes & entry.Types) != 0;
+            var matchesText = string.IsNullOrEmpty(FilterText) || entry.Message.Contains(FilterText, StringComparison.OrdinalIgnoreCase);
+
+            if (matchesType && matchesText)
             {
                 _filtered.Add(entry);
             }
