@@ -23,7 +23,10 @@ def prepare(output, unity_version, variant):
     shutil.copy2(source / "Assets/Samples~/Unity.SmartDebugger.Samples.asmdef", sample)
     dependencies = {"com.unity.test-framework": "1.4.6"}
     if variant in ("input-system", "recording", "disabled"):
-        dependencies["com.unity.inputsystem"] = "1.19.0" if unity_version.startswith("6000.") else "1.7.0"
+        dependencies["com.unity.inputsystem"] = (
+            "1.19.0" if unity_version.startswith("6000.") else
+            "1.4.4" if unity_version.startswith("2022.1.") else "1.7.0"
+        )
     if variant in ("recording", "disabled"):
         for name in ("jp.co.cyberagent.instant-replay", "jp.co.cyberagent.instant-replay.dependencies"):
             dependencies[name] = (

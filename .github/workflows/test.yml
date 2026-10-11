@@ -10,7 +10,24 @@ permissions:
   contents: read
 
 jobs:
+  check-license:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Unity activation configuration
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        shell: bash
+        run: |
+          if [[ -n "$UNITY_LICENSE" || ( -n "$UNITY_EMAIL" && -n "$UNITY_PASSWORD" ) ]]; then
+            echo "Unity activation configuration is available."
+          else
+            echo "::error::Unity activation secrets are unavailable. Configure UNITY_LICENSE or both UNITY_EMAIL and UNITY_PASSWORD in repository Settings > Secrets and variables > Actions. Fork pull requests do not receive these secrets."
+            exit 1
+          fi
   test:
+    needs: check-license
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -36,6 +53,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           projectPath: .utmp/consumer
           unityVersion: ${{ matrix.unity }}
