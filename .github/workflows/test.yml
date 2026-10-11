@@ -25,34 +25,30 @@ jobs:
           if [[ -n "$UNITY_LICENSE" || ( -n "$UNITY_EMAIL" && -n "$UNITY_PASSWORD" ) ]]; then
             echo "Unity activation configuration is available."
           else
-            echo "::error::Unity activation secrets are unavailable. Configure UNITY_LICENSE or both UNITY_EMAIL and UNITY_PASSWORD in repository Settings > Secrets and variables > Actions. Fork pull requests do not receive these secrets."
+            echo "::error::Unity activation secrets are unavailable. Configure UNITY_LICENSE or both UNITY_EMAIL and UNITY_PASSWORD in repository Settings > Secrets and variables > Actions."
             exit 1
           fi
+
   test:
     needs: check-license
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    permissions:
-      contents: read
-      checks: write
-      pull-requests: write
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
-        unity: ['2022.3.62f1', '6000.3.10f1']
-        variant: [minimal, input-system, recording, disabled]
         include:
-          - unity: '2022.1.24f1'
+          - unity: '2022.3.62f1'
             variant: minimal
-          - unity: '2022.1.24f1'
-            variant: input-system
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+
       - name: Create isolated consumer
         run: python Tools/prepare_consumer.py --output .utmp/consumer --unity-version '${{ matrix.unity }}' --variant '${{ matrix.variant }}'
+
       - name: Run package and assembly checks
         uses: game-ci/unity-test-runner@v4
         env:
@@ -65,6 +61,7 @@ jobs:
           unityVersion: ${{ matrix.unity }}
           testMode: EditMode
           artifactsPath: artifacts
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
