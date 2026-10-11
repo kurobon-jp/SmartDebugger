@@ -1,6 +1,6 @@
 {
     "name": "Unity.SmartDebugger.InputSystem",
-    "references": ["Unity.SmartDebugger", "Unity.InputSystem", "Unity.ugui"],
+    "references": ["Unity.SmartDebugger", "Unity.InputSystem", "UnityEngine.UI"],
     "defineConstraints": ["!DISABLE_SMART_DEBUG", "SMART_DEBUG_INPUT_SYSTEM", "ENABLE_INPUT_SYSTEM"],
     "versionDefines": [
         {"name": "com.unity.inputsystem", "expression": "1.0.0", "define": "SMART_DEBUG_INPUT_SYSTEM"}

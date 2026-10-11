@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Unity.SmartDebugger",
+        "UnityEngine.UI",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
