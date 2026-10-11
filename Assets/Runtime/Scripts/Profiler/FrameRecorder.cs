@@ -16,12 +16,17 @@ namespace SmartDebugger
         internal long TotalMonoBytes { get; private set; }
         internal long UsedBytes { get; private set; }
         internal long TotalBytes { get; private set; }
+        internal float CpuTotalFrameTime { get; private set; }
+        internal float CpuMainThreadFrameTime { get; private set; }
+        internal float CpuRenderThreadFrameTime { get; private set; }
+        internal float GpuFrameTime { get; private set; }
 
         private ProfilerRecorder _cpuTotalFrameTime;
+        private ProfilerRecorder _cpuMainThreadFrameTime;
         private ProfilerRecorder _cpuRenderThreadFrameTime;
+        private ProfilerRecorder _gpuFrameTime;
         private ProfilerRecorder _physics2DSimulate;
         private ProfilerRecorder _physicsProcessing;
-        private ProfilerRecorder _playerLoop;
 
         private int _sampleOffset;
 
@@ -33,11 +38,13 @@ namespace SmartDebugger
             DeltaTimes = new FloatQueue(sampleCount);
 
             _cpuTotalFrameTime = ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Total Frame Time");
+            _cpuMainThreadFrameTime =
+                ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Main Thread Frame Time");
             _cpuRenderThreadFrameTime =
                 ProfilerRecorder.StartNew(ProfilerCategory.Internal, "CPU Render Thread Frame Time");
+            _gpuFrameTime = ProfilerRecorder.StartNew(ProfilerCategory.Render, "GPU Frame Time");
             _physicsProcessing = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "FixedUpdate.PhysicsFixedUpdate");
             _physics2DSimulate = ProfilerRecorder.StartNew(ProfilerCategory.Physics, "Physics2D.Simulate");
-            _playerLoop = ProfilerRecorder.StartNew(ProfilerCategory.Scripts, "PlayerLoop");
         }
 
         internal void Sample()
@@ -50,16 +57,22 @@ namespace SmartDebugger
 
         private void SampleCpu()
         {
-            var cpuTotalFrameTime = GetMs(_cpuTotalFrameTime);
-            var cpuMainThreadFrameTime = GetMs(_playerLoop);
-            var cpuRenderThreadFrameTime = GetMs(_cpuRenderThreadFrameTime);
+            CpuTotalFrameTime = GetMs(_cpuTotalFrameTime);
+            CpuMainThreadFrameTime = GetMs(_cpuMainThreadFrameTime);
+            CpuRenderThreadFrameTime = GetMs(_cpuRenderThreadFrameTime);
+            GpuFrameTime = GetMs(_gpuFrameTime);
             var physicsTime = GetMs(_physicsProcessing);
             physicsTime += GetMs(_physics2DSimulate);
-            var otherTime = Mathf.Max(0, cpuTotalFrameTime - cpuMainThreadFrameTime);
-            CpuSamples[SampleOffset] = new Vector4(cpuMainThreadFrameTime - cpuRenderThreadFrameTime - physicsTime,
-                cpuRenderThreadFrameTime,
+            // CPU Main Thread Frame Time already includes physics. Keep the
+            // categories non-negative and avoid subtracting render-thread time
+            // from main-thread time: they are measured on different threads.
+            var scriptTime = Mathf.Max(0, CpuMainThreadFrameTime - physicsTime);
+            var otherTime = Mathf.Max(0,
+                CpuTotalFrameTime - scriptTime - physicsTime - CpuRenderThreadFrameTime);
+            CpuSamples[SampleOffset] = new Vector4(scriptTime,
+                CpuRenderThreadFrameTime,
                 physicsTime, otherTime);
-            DeltaTimes.Enqueue(cpuTotalFrameTime / 1000f);
+            DeltaTimes.Enqueue(CpuTotalFrameTime / 1000f);
         }
 
         private void SampleMemory()
@@ -68,8 +81,12 @@ namespace SmartDebugger
             TotalMonoBytes = Profiler.GetMonoHeapSizeLong();
             UsedBytes = Profiler.GetTotalAllocatedMemoryLong();
             TotalBytes = Profiler.GetTotalReservedMemoryLong();
-            var monoNorm = Mathf.Clamp01((float)(UsedMonoBytes / (double)TotalMonoBytes));
-            var totalNorm = Mathf.Clamp01((float)(UsedBytes / (double)TotalBytes));
+            var monoNorm = TotalMonoBytes > 0
+                ? Mathf.Clamp01((float)(UsedMonoBytes / (double)TotalMonoBytes))
+                : 0f;
+            var totalNorm = TotalBytes > 0
+                ? Mathf.Clamp01((float)(UsedBytes / (double)TotalBytes))
+                : 0f;
             MemorySamples[SampleOffset] = new Vector4(monoNorm, totalNorm);
         }
 
@@ -81,10 +98,11 @@ namespace SmartDebugger
         public void Dispose()
         {
             _cpuTotalFrameTime.Dispose();
+            _cpuMainThreadFrameTime.Dispose();
             _cpuRenderThreadFrameTime.Dispose();
+            _gpuFrameTime.Dispose();
             _physics2DSimulate.Dispose();
             _physicsProcessing.Dispose();
-            _playerLoop.Dispose();
         }
     }
 }

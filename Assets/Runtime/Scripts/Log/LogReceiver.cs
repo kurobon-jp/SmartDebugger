@@ -51,8 +51,14 @@ namespace SmartDebugger
         {
             lock (_queueLock)
             {
-                if (_disposed || _queue.Count == 0) return;
-                (_queue, _processing) = (_processing, _queue);
+                if (_disposed) return;
+                // A subscriber may have interrupted the previous batch. Drain
+                // its remaining entries before swapping in newer received logs.
+                if (_processing.Count == 0)
+                {
+                    if (_queue.Count == 0) return;
+                    (_queue, _processing) = (_processing, _queue);
+                }
             }
 
             // Invoke subscribers outside the lock so logging from them cannot
@@ -109,7 +115,8 @@ namespace SmartDebugger
 
         private void ApplyFilter(LogEntry entry)
         {
-            var matchesType = (_filterTypes & entry.Types) != 0;
+            // The mask contains hidden log types, not selected visible types.
+            var matchesType = (_filterTypes & entry.Types) == 0;
             var matchesText = string.IsNullOrEmpty(FilterText) || entry.Message.Contains(FilterText, StringComparison.OrdinalIgnoreCase);
 
             if (matchesType && matchesText)
