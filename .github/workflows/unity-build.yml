@@ -48,6 +48,8 @@ jobs:
     name: Compile Player scripts (Windows)
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
