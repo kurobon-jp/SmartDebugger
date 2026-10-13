@@ -5,7 +5,11 @@ using SmartDebugger;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SampleBugReporter", menuName = "SmartDebugger/BugReporter/SampleBugReporter")]
+#if UNITY_2022_3_OR_NEWER
 public class SampleBugReporter : ScreenRecordBugReporter
+#else
+public class SampleBugReporter : BugReporter
+#endif
 {
     public override string SendTo => "Save report";
 

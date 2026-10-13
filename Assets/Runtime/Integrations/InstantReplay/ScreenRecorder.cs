@@ -1,4 +1,4 @@
-#if ENABLE_INSTANTREPLAY && !EXCLUDE_INSTANTREPLAY
+#if UNITY_2022_3_OR_NEWER && ENABLE_INSTANTREPLAY && !EXCLUDE_INSTANTREPLAY
 using System;
 using System.Threading.Tasks;
 using InstantReplay;
@@ -6,8 +6,14 @@ using UnityEngine;
 
 namespace SmartDebugger
 {
-    public class ScreenRecorder : IDisposable
+    public class ScreenRecorder : IScreenRecorder
     {
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void Register()
+        {
+            ScreenRecording.Create = options => new ScreenRecorder(options);
+        }
+
         private readonly RealtimeInstantReplaySession _session;
         private bool _disposed;
 

@@ -25,7 +25,7 @@ namespace SmartDebugger
         {
             get
             {
-                Initialize();
+                InitializeInternal(false);
                 return _instance;
             }
         }
@@ -38,14 +38,12 @@ namespace SmartDebugger
         private static void OnSceneLoaded()
         {
             if (!Application.isPlaying || SDSettings.GetInstance() is not { IsAutoInitialize: true }) return;
-            // The auto-initialize setting has already been checked above. Force initialization here so
-            // Instance does not bypass the disabled setting while the scene-load path can still initialize.
-            InitializeInternal(true);
+            Initialize();
         }
 
         public static void Initialize()
         {
-            InitializeInternal(false);
+            InitializeInternal(true);
         }
 
         private static void InitializeInternal(bool force)
@@ -68,17 +66,16 @@ namespace SmartDebugger
         private void Awake()
         {
             var settings = SDSettings.Instance;
-            LogReceiver = new LogReceiver();
+            LogReceiver = new LogReceiver(settings.MaxLogEntries);
             FrameRecorder = new FrameRecorder();
             if (settings.IsAutoGenerateEventSystem && EventSystem.current == null)
             {
                 var go = new GameObject("EventSystem");
                 go.AddComponent<EventSystem>();
-#if ENABLE_INPUT_SYSTEM
-                go.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
-#else
-                go.AddComponent<StandaloneInputModule>();
-#endif
+                if (EventDetectorFactory.AddInputModule != null)
+                    EventDetectorFactory.AddInputModule(go);
+                else
+                    go.AddComponent<StandaloneInputModule>();
             }
 
             var openShortcut = settings.OpenShortcut;
@@ -112,7 +109,11 @@ namespace SmartDebugger
         {
             FrameRecorder?.Dispose();
             FrameRecorder = null;
-            LogReceiver.OnAdded -= OnLogAdded;
+            if (LogReceiver != null)
+            {
+                LogReceiver.OnAdded -= OnLogAdded;
+                LogReceiver.Dispose();
+            }
         }
 
         public void OpenCanvas()

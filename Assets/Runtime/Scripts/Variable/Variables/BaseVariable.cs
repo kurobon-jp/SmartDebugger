@@ -67,6 +67,9 @@ namespace SmartDebugger
             }
             set
             {
+                // Load persisted/default state before comparing, and mark the
+                // variable initialized even when the first access is a write.
+                _ = Value;
                 var newValue = Validate(value);
                 if (Equals(_value, newValue)) return;
                 SetValue(newValue);

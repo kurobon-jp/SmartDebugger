@@ -1,0 +1,6 @@
+# Public API behavior is documented where useful; no blanket comment quota.
+language: "ja-JP"
+reviews:
+  pre_merge_checks:
+    docstrings:
+      mode: "off"

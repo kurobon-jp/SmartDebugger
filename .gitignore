@@ -102,3 +102,7 @@ Assets/Samples
 Assets/StompyRobot
 Assets/StompyRobot.meta
 bin
+
+# Python generated files
+__pycache__/
+*.py[cod]

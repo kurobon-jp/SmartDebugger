@@ -1,11 +1,11 @@
 {
   "dependencies": {
     "com.github.kurobon.simple_scroll": {
-      "version": "1.0.10",
+      "version": "https://github.com/kurobon-jp/SimpleScroll.git?path=Assets/",
       "depth": 0,
-      "source": "registry",
+      "source": "git",
       "dependencies": {},
-      "url": "https://package.openupm.com"
+      "hash": "99951d512de60230f89828c6be8ee2d82964c8f9"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
@@ -14,10 +14,12 @@
       "dependencies": {}
     },
     "com.unity.collab-proxy": {
-      "version": "2.10.2",
+      "version": "1.17.7",
       "depth": 0,
       "source": "registry",
-      "dependencies": {},
+      "dependencies": {
+        "com.unity.services.core": "1.0.1"
+      },
       "url": "https://packages.unity.com"
     },
     "com.unity.device-simulator.devices": {
@@ -28,10 +30,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ext.nunit": {
-      "version": "2.0.5",
+      "version": "2.0.3",
       "depth": 1,
-      "source": "builtin",
-      "dependencies": {}
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
       "version": "3.0.38",
@@ -42,127 +45,43 @@
       },
       "url": "https://packages.unity.com"
     },
-    "com.unity.inputsystem": {
-      "version": "1.13.1",
-      "depth": 0,
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.0.2",
+      "depth": 2,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.services.core": {
+      "version": "1.6.0",
+      "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.modules.uielements": "1.0.0"
+        "com.unity.modules.androidjni": "1.0.0",
+        "com.unity.nuget.newtonsoft-json": "3.0.2",
+        "com.unity.modules.unitywebrequest": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.6.0",
+      "version": "1.4.6",
       "depth": 0,
-      "source": "builtin",
+      "source": "registry",
       "dependencies": {
         "com.unity.ext.nunit": "2.0.3",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
-      }
+      },
+      "url": "https://packages.unity.com"
     },
     "com.unity.ugui": {
-      "version": "2.0.0",
+      "version": "1.0.0",
       "depth": 0,
       "source": "builtin",
       "dependencies": {
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
-    },
-    "jp.co.cyberagent.instant-replay": {
-      "version": "https://github.com/CyberAgentGameEntertainment/InstantReplay.git?path=/Packages/jp.co.cyberagent.instant-replay#v1.6.11",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "9cc7ebc415e2f40cb347e06e331e1bf050c50bd5"
-    },
-    "jp.co.cyberagent.instant-replay.dependencies": {
-      "version": "https://github.com/CyberAgentGameEntertainment/InstantReplay.git?path=/Packages/jp.co.cyberagent.instant-replay.dependencies#v1.6.11",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "org.nuget.system.io.pipelines": "9.0.3",
-        "org.nuget.system.threading.channels": "9.0.2"
-      },
-      "hash": "9cc7ebc415e2f40cb347e06e331e1bf050c50bd5"
-    },
-    "org.nuget.microsoft.bcl.asyncinterfaces": {
-      "version": "9.0.2",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {
-        "org.nuget.system.threading.tasks.extensions": "4.5.4"
-      },
-      "url": "https://package.openupm.com"
-    },
-    "org.nuget.system.buffers": {
-      "version": "4.5.1",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://package.openupm.com"
-    },
-    "org.nuget.system.io.pipelines": {
-      "version": "9.0.3",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "org.nuget.system.buffers": "4.5.1",
-        "org.nuget.system.memory": "4.5.5",
-        "org.nuget.system.threading.tasks.extensions": "4.5.4"
-      },
-      "url": "https://package.openupm.com"
-    },
-    "org.nuget.system.memory": {
-      "version": "4.5.5",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {
-        "org.nuget.system.buffers": "4.5.1",
-        "org.nuget.system.numerics.vectors": "4.4.0",
-        "org.nuget.system.runtime.compilerservices.unsafe": "4.5.3"
-      },
-      "url": "https://package.openupm.com"
-    },
-    "org.nuget.system.numerics.vectors": {
-      "version": "4.4.0",
-      "depth": 3,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://package.openupm.com"
-    },
-    "org.nuget.system.runtime.compilerservices.unsafe": {
-      "version": "4.5.3",
-      "depth": 3,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://package.openupm.com"
-    },
-    "org.nuget.system.threading.channels": {
-      "version": "9.0.2",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "org.nuget.microsoft.bcl.asyncinterfaces": "9.0.2",
-        "org.nuget.system.threading.tasks.extensions": "4.5.4"
-      },
-      "url": "https://package.openupm.com"
-    },
-    "org.nuget.system.threading.tasks.extensions": {
-      "version": "4.5.4",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {
-        "org.nuget.system.runtime.compilerservices.unsafe": "4.5.3"
-      },
-      "url": "https://package.openupm.com"
-    },
-    "com.unity.modules.accessibility": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
@@ -211,15 +130,9 @@
         "com.unity.modules.animation": "1.0.0"
       }
     },
-    "com.unity.modules.hierarchycore": {
-      "version": "1.0.0",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {}
-    },
     "com.unity.modules.imageconversion": {
       "version": "1.0.0",
-      "depth": 0,
+      "depth": 1,
       "source": "builtin",
       "dependencies": {}
     },
@@ -306,8 +219,17 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.hierarchycore": "1.0.0",
-        "com.unity.modules.physics": "1.0.0"
+        "com.unity.modules.uielementsnative": "1.0.0"
+      }
+    },
+    "com.unity.modules.uielementsnative": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
       }
     },
     "com.unity.modules.umbra": {
@@ -387,16 +309,6 @@
         "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.unitywebrequest": "1.0.0"
-      }
-    },
-    "com.unity.modules.vr": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.physics": "1.0.0",
-        "com.unity.modules.xr": "1.0.0"
       }
     },
     "com.unity.modules.wind": {
