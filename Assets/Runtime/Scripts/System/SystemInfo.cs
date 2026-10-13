@@ -95,9 +95,14 @@ namespace SmartDebugger
         private static void AddDisplayInfo(int sortOrder)
         {
             var res = Screen.currentResolution;
+#if UNITY_2022_2_OR_NEWER
+            var refreshRate = res.refreshRateRatio.value;
+#else
+            var refreshRate = res.refreshRate;
+#endif
             AddSystemInfoText(sortOrder, "Display Info", () =>
                 $"Resolution: {res.width} x {res.height}\n" +
-                $"Refresh Rate: {res.refreshRateRatio.value} Hz\n" +
+                $"Refresh Rate: {refreshRate} Hz\n" +
                 $"DPI: {Screen.dpi}\n" +
                 $"Fullscreen Mode: {Screen.fullScreenMode}\n" +
                 $"Orientation: {Screen.orientation}"
